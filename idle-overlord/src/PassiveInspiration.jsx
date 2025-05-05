@@ -1,23 +1,25 @@
 import React, { useEffect } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
+import { calculateTotalRate } from "./utils";
 
-function PassiveInspiration({ rate = 0.01, interval = 1000 }) {
+function PassiveInspiration({ interval = 1000 }) {
   const { gameState, setGameState } = useGPTOverlord();
+  const totalRate = calculateTotalRate(gameState.generators);
 
   useEffect(() => {
-    if (!gameState.autoIdeaUnlocked) return;
+    if (gameState.tutorialStep < 4 || !gameState.autoIdeaUnlocked) return;
 
     const id = setInterval(() => {
       setGameState((prev) => ({
         ...prev,
-        inspiration: prev.inspiration + rate
+        inspiration: prev.inspiration + totalRate
       }));
     }, interval);
 
     return () => clearInterval(id);
-  }, [gameState.autoIdeaUnlocked, rate, interval, setGameState]);
+  }, [gameState.autoIdeaUnlocked, gameState.tutorialStep, interval, totalRate]);
 
-  return null; // ce composant n'affiche rien
+  return null;
 }
 
 export default PassiveInspiration;

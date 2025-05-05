@@ -14,11 +14,10 @@ function UnlockAutoIdeaButton({ threshold = 10 }) {
         inspiration: prev.inspiration - threshold
       }));
       logToTerminal("GPT-Overlord: Passive generation module unlocked.");
-      logToTerminal("GPT-Overlord: Hmmm... tu as cédé plus vite que prévu.");
     }
   };
 
-  if (autoIdeaUnlocked || gameState.tutorialStep < 1) return null;
+  if (autoIdeaUnlocked || gameState.tutorialStep < 6) return null;
 
   return (
     <button

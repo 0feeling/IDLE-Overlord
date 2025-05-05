@@ -22,8 +22,8 @@ function OverlayMessage({ gameState }) {
       <div className="bg-gray-900 p-6 rounded-md shadow-lg">
         <h2 className="font-bold mb-2">GPT-Overlord</h2>
         <p>
-          Félicitations ! Tu as débloqué une nouvelle capacité 🧠 Tu avances
-          bien !{" "}
+          Félicitations ! Tu as débloqué le 🧠 GPT Auto-idée 🧠 L'inspiration te
+          vient toute seule{" "}
         </p>
       </div>
     </div>

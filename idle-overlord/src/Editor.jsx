@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import InspirationRateDisplay from "./InspirationRateDisplay"; // Assure-toi que le chemin est correct
 
 function Editor({ gameState, setGameState }) {
   const [missionValidated, setMissionValidated] = useState(false);
@@ -32,10 +33,14 @@ function Editor({ gameState, setGameState }) {
   return (
     <div className="w-1/2 bg-gray-800 p-4 overflow-y-auto">
       <h2 className="text-xl font-bold mb-2 text-white">Code Editor</h2>
-      <div className="text-sm text-gray-400 mb-2">
+      <div className="text-xl text-red-400 mb-2">
         Inspiration actuelle :{" "}
         <strong>{gameState.inspiration.toFixed(2)}</strong>
       </div>
+
+      {/* Affichage du taux d'inspiration avec le composant */}
+      <InspirationRateDisplay />
+
       <textarea
         className="w-full h-96 bg-gray-700 text-white p-2 rounded-md font-mono"
         value={gameState.code}

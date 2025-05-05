@@ -59,7 +59,7 @@ function FirstGenerators() {
 
     // Étape 0 : 3 fois la même ligne
     const occurrences = (
-      code.match(/console\.log\(['"]Inspiration !['"]\)/g) || []
+      code.match(/console\.log\(['"]Inspiration !['"]\)[;\s]?/g) || []
     ).length;
     if (step === 0 && occurrences >= 3) {
       setStep(1);

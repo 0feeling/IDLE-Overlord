@@ -1,223 +1,104 @@
 import React, { useEffect, useState } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
-import FirstGenerators from "./FirstGenerators";
+import MissionTerminal from "./MissionTerminal";
+import OverlordFeedback from "./OverlordFeedback";
 
-function Terminal() {
-  const { terminalLogs, gameState, advanceTutorialStep, unlockAutoIdea } =
-    useGPTOverlord();
+export default function Terminal() {
+  const { gameState, advanceTutorialStep } = useGPTOverlord();
   const [messages, setMessages] = useState([
-    "Idle-Overlord v0.1 — Initialisation..."
+    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
-  const [hasShownMissingMessage, setHasShownMissingMessage] = useState(false);
+  const [input, setInput] = useState("");
 
-  const handleInput = (input) => {
-    setMessages((prev) => [...prev, `> ${input}`]);
+  const [completedSteps, setCompletedSteps] = useState([]);
 
-    switch (gameState.tutorialStep) {
-      case 0:
-        if (/console\.log\(['"]Hello World!['"]\)/.test(input)) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Ah… Le cri primal du codeur. Bienvenue à toi.",
-            "Je sens que tu es prêt. Prouve-le."
-          ]);
-          // Avancer à l'étape suivante après un délai
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000); // Délai pour laisser le message s'afficher
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Fais-moi entendre ton premier mot. Essaie un `console.log()`..."
-          ]);
-        }
-        break;
+  const handleInput = (e) => {
+    e.preventDefault();
 
-      case 1:
-        if (input.includes("function unlockButton")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Hmmm... pas mal.",
-            "Tu viens de créer ta première **clé**.",
-            "Accès au bouton accordé. Clique donc un peu."
-          ]);
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Crée une fonction. Nomme-la `unlockButton`."
-          ]);
-        }
-        break;
+    const userInput = input.trim();
+    setMessages((prev) => [...prev, `> ${userInput}`]);
 
-      case 2:
-        if (input.includes("<button>")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Un objet tangible. Bien.",
-            "Un bouton, c’est bien. Mais que fait-il ?"
-          ]);
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Il te manque un élément cliquable. Un `<button>` ferait l’affaire."
-          ]);
-        }
-        break;
+    const matchByStep = {
+      0: /console\.log\(['"]Hello World!['"]\)/,
+      1: /function\s+unlockButton/,
+      2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
+      3: /function\s+gainInspiration/,
+      4: /function\s+autoClick/,
+      5: /function\s+unlockAutoIdea/
+    };
 
-      case 3:
-        if (input.includes("function gainInspiration()")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Voilà… Le souffle créatif est enclenché.",
-            "Quand tu cliques, tu **produis**.",
-            "Mais à force de cliquer… tu vas vouloir **automatiser**."
-          ]);
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Donne une **fonction** à ton bouton. Appelle-la `gainInspiration()`."
-          ]);
-        }
-        break;
+    const successMessages = {
+      0: ["GPT-Overlord: Bien joué ! 🎉 C’est ton premier souffle de code."],
+      1: ["GPT-Overlord: Magnifique ! Une fonction clé, littéralement."],
+      2: ["GPT-Overlord: Voilà un bouton qui ne demande qu’à être cliqué !"],
+      3: ["GPT-Overlord: C’est bon, tu as insufflé une âme à ton bouton ✨"],
+      4: ["GPT-Overlord: Tu ressens ? Ce frisson d’efficacité..."],
+      5: [
+        "GPT-Overlord: La machine est en marche. Les idées affluront toutes seules quand tu auras débloqueé le GPT Auto-idée ! "
+      ]
+    };
 
-      case 4:
-        if (input.includes("function autoClick()")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Tu comprends enfin…",
-            "**L’Automatisation** est la clef de la domination.",
-            "Mais pourquoi s’arrêter là ?"
-          ]);
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Imagine une fonction qui clique toute seule… Comment l’appellerais-tu ?"
-          ]);
-        }
-        break;
+    const helpMessages = {
+      0: [
+        "GPT-Overlord: Essaie d’écrire exactement : \n`console.log('Hello World!')`. \n ",
+        "C’est ta toute première incantation. Tu peux le faire !"
+      ],
+      1: [
+        "GPT-Overlord: Tu dois créer une fonction appelée `unlockButton`. Elle pourrait ressembler à ça :\n\n\nfunction unlockButton() {\n \n}\n"
+      ],
+      2: [
+        "GPT-Overlord: On attend un bouton HTML ici. Un petit exemple ?\n\n\n<button>Inspiration</button>\n"
+      ],
+      3: [
+        "GPT-Overlord: Il te faut une fonction `gainInspiration()`. Voici une piste :\n\n\nfunction gainInspiration()\n"
+      ],
+      4: [
+        "GPT-Overlord: Essaie de créer une fonction `autoClick` qui utilise `setInterval()`.",
+        "Un modèle possible :\n\n\nfunction autoClick()\n"
+      ],
+      5: [
+        "GPT-Overlord: Tu peux créer une fonction `unlockAutoIdea()` qui appelle `autoClick()`.",
+        "Par exemple :\n\n\nfunction unlockAutoIdea()"
+      ]
+    };
 
-      case 5:
-        if (input.includes("function unlockAutoIdea")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Tu es prêt à créer… des créateurs.",
-            "**Auto-Idea** activé. Tu n’es plus seul.",
-            "Mais attention… chaque pouvoir a son prix."
-          ]);
-          unlockAutoIdea();
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Tu dois appeler une fonction nommée `unlockAutoIdea()` pour aller plus loin..."
-          ]);
-        }
-        break;
+    const currentStep = gameState.tutorialStep;
 
-      case 6:
-        if (input.includes("function manipulateArray")) {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Bien joué, tu maîtrises la logique des tableaux !",
-            "Essaie d'ajouter une étape où tu filtres les nombres impairs."
-          ]);
-          setTimeout(() => {
-            advanceTutorialStep();
-          }, 1000);
-        } else {
-          setMessages((prev) => [
-            ...prev,
-            "GPT-Overlord: Une fonction qui manipule un tableau ? Tu sais faire ça."
-          ]);
-        }
-        break;
-
-      default:
+    if (matchByStep[currentStep]?.test(userInput)) {
+      // Marquer l'étape comme complétée
+      if (!completedSteps.includes(currentStep)) {
+        setCompletedSteps([...completedSteps, currentStep]);
+      }
+      setMessages((prev) => [...prev, ...successMessages[currentStep]]);
+      setTimeout(() => advanceTutorialStep(), 1000);
+    } else {
+      // Si ce n’est pas encore fait, proposer de l’aide
+      if (!completedSteps.includes(currentStep)) {
+        setMessages((prev) => [...prev, ...helpMessages[currentStep]]);
+      } else {
         setMessages((prev) => [
           ...prev,
-          "GPT-Overlord: Le silence aussi est une réponse..."
+          "GPT-Overlord: Hmm… Ce n’est pas ce que j’attendais. Reviens à la mission actuelle."
         ]);
-        break;
+      }
     }
+
+    setInput("");
   };
 
-  useEffect(() => {
-    if (gameState.tutorialStep === 0) {
-      const intro = [
-        "👁️ GPT-Overlord: Je suis GPT-Overlord, ton assistant de création.",
-        "Je t'observe depuis longtemps...",
-        "Avant de débloquer mes fonctions avancées, tu dois prouver que tu sais coder.",
-        "Commence par m’écrire `console.log('Hello World!')`"
-      ];
-      intro.forEach((line, i) => {
-        setTimeout(() => {
-          setMessages((prev) => [...prev, line]);
-        }, i * 2000);
-      });
-    } else if (gameState.tutorialStep === 1) {
-      // Si l'étape est 1, on commence le tutoriel suivant, etc.
-      setMessages((prev) => [
-        ...prev,
-        "GPT-Overlord: Bravo pour avoir validé la première étape !"
-      ]);
-    }
-  }, [gameState.tutorialStep]); // Re-run le useEffect quand tutorialStep change
-
-  useEffect(() => {
-    if (gameState.autoIdeaUnlocked && !hasShownMissingMessage) {
-      const timeout = setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          "Tu avances bien, mais il te manque quelque chose..."
-        ]);
-        setHasShownMissingMessage(true);
-      }, 1000);
-      return () => clearTimeout(timeout);
-    }
-  }, [gameState.autoIdeaUnlocked, hasShownMissingMessage]);
-
-  const allMessages = [...messages, ...terminalLogs];
-
   return (
-    <div className="w-1/2 bg-gray-800 p-4 border-r-2 border-gray-600 overflow-y-auto">
-      <h2 className="text-xl font-bold mb-2">GPT-Overlord Console</h2>
-      <div className="text-sm font-mono whitespace-pre-wrap">
-        {allMessages.map((msg, index) => (
-          <p key={index}>{msg}</p>
-        ))}
-      </div>
-
-      {/* Affichage du composant FirstGenerators quand le tutorialStep est à 2 */}
-      {gameState.tutorialStep === 7 && <FirstGenerators />}
-
-      <input
-        type="text"
-        className="w-full bg-gray-700 text-white mt-4 p-2 rounded"
-        placeholder="Tape ton code ici..."
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            const input = e.target.value.trim();
-            e.target.value = "";
-            handleInput(input);
-          }
-        }}
-      />
+    <div className="w-1/3 bg-gray-950 p-4 flex flex-col space-y-2">
+      <MissionTerminal />
+      <OverlordFeedback messages={messages} />
+      <form onSubmit={handleInput}>
+        <input
+          type="text"
+          className="w-full mt-2 p-2 text-black"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Tape ici ta commande..."
+        />
+      </form>
     </div>
   );
 }
-
-export default Terminal;
