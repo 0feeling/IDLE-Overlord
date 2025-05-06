@@ -63,6 +63,13 @@ export const GPTOverlordContextProvider = ({ children }) => {
     "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
 
+  const [mistralStep, setMistralStep] = useState(0);
+  const hideOverlord = mistralStep >= 1;
+
+  const advanceMistralStep = () => {
+    setMistralStep((prev) => prev + 1);
+  };
+
   // Fonction pour avancer dans le tutoriel
   const advanceTutorialStep = () => {
     setGameState((prev) => {
@@ -136,7 +143,10 @@ export const GPTOverlordContextProvider = ({ children }) => {
         setTerminalLogs,
         advanceTutorialStep,
         unlockAutoIdea,
-        logToTerminal
+        logToTerminal,
+        mistralStep,
+        advanceMistralStep,
+        hideOverlord
       }}
     >
       {children}

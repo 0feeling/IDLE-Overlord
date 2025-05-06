@@ -5,13 +5,13 @@ function MissionPanel({ mission, isValidated }) {
   if (!mission) return null;
 
   return (
-    <div className="absolute top-4 right-4 bg-gray-800 bg-opacity-90 p-4 rounded-2xl shadow-lg w-64 flex items-start gap-3">
+    <div className="absolute top-4 border border-white left-2/4 text-xs bg-gray-800 bg-opacity-90 p-4 rounded-2xl shadow-lg w-64 flex items-start gap-3">
       <div className="flex-1">
-        <h2 className="text-sm text-gray-400 uppercase tracking-wide font-semibold mb-1">
+        <h2 className=" text-gray-400 uppercase tracking-wide font-semibold mb-1">
           Mission actuelle
         </h2>
         <p
-          className={`text-base leading-snug ${isValidated ? "line-through text-green-400" : "text-white"}`}
+          className={`text-xs leading-snug ${isValidated ? "line-through text-green-400" : "text-white"}`}
         >
           {mission}
         </p>
