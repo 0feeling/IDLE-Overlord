@@ -12,7 +12,6 @@ import InspirationButton from "./InspirationButton";
 import PassiveInspiration from "./PassiveInspiration";
 import UnlockAutoIdeaButton from "./UnlockAutoIdeaButton";
 import MissionPanel from "./MissionPanel";
-import AllGeneratorsPanel from "./AllGeneratorsPanel";
 import GeneratorPanel from "./GeneratorPanel";
 
 function App() {
@@ -32,6 +31,8 @@ function AppContent() {
   function buyGenerator(id) {
     setGameState((prev) => {
       const gen = prev.generators[id];
+      if (!gen) return prev;
+
       const cost = Math.floor(gen.baseCost * Math.pow(1.15, gen.count));
       if (prev.inspiration < cost) return prev;
 
@@ -60,7 +61,7 @@ function AppContent() {
         <Editor gameState={gameState} setGameState={setGameState} />
         <div className="w-1/3 p-4">
           <h2 className="text-xl mb-2 font-bold">Automatisations</h2>
-          {Object.entries(gameState.generators).map(([id, data]) => (
+          {Object.entries(gameState.generators || {}).map(([id, data]) => (
             <GeneratorPanel
               key={id}
               id={id}

@@ -2,21 +2,29 @@ import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 
 function UnlockAutoIdeaButton({ threshold = 10 }) {
-  const { gameState, unlockAutoIdea, setGameState, logToTerminal } =
+  const { gameState, setGameState, unlockAutoIdea, logToTerminal } =
     useGPTOverlord();
   const { inspiration, autoIdeaUnlocked } = gameState;
 
   const handleUnlock = () => {
-    if (inspiration >= threshold) {
+    if (inspiration >= threshold && typeof unlockAutoIdea === "function") {
+      // Appel de la fonction de déverrouillage
       unlockAutoIdea();
+
+      // Réduction de l'inspiration
       setGameState((prev) => ({
         ...prev,
         inspiration: prev.inspiration - threshold
       }));
-      logToTerminal("GPT-Overlord: Passive generation module unlocked.");
+
+      // Log dans le terminal
+      if (typeof logToTerminal === "function") {
+        logToTerminal("GPT-Overlord: Passive generation module unlocked.");
+      }
     }
   };
 
+  // Ne pas afficher si déjà déverrouillé ou si l'étape du tutoriel n'est pas assez avancée
   if (autoIdeaUnlocked || gameState.tutorialStep < 6) return null;
 
   return (

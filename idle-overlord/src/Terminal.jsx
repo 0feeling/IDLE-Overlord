@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
-import MistralFeedback from "./MistralFeedback"; // ⬅️ nouveau composant
+import MistralFeedback from "./MistralFeedback";
 
 export default function Terminal() {
-  const { gameState, advanceTutorialStep } = useGPTOverlord();
+  const { gameState, advanceTutorialStep, setTerminalLogs } = useGPTOverlord();
   const [messages, setMessages] = useState([
     "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
@@ -20,6 +20,9 @@ export default function Terminal() {
     const userInput = input.trim();
     setMessages((prev) => [...prev, `> ${userInput}`]);
 
+    // Synchroniser avec les logs globaux pour la persistance
+    setTerminalLogs((prev) => [...prev, `> ${userInput}`]);
+
     const matchByStep = {
       0: /console\.log\(['"]Hello World!['"]\)/,
       1: /function\s+unlockButton/,
@@ -27,15 +30,15 @@ export default function Terminal() {
       3: /function\s+gainInspiration/,
       4: /function\s+autoClick/,
       5: /function\s+unlockAutoIdea/,
-      6: /system\.debug\(\)|who\.is\.mistral\(\)/ // 💡 Déclenche Mistral
+      6: /system\.debug\(\)|who\.is\.mistral\(\)/ // Déclenche Mistral
     };
 
     const successMessages = {
-      0: ["GPT-Overlord: Bien joué ! 🎉 C’est ton premier souffle de code."],
+      0: ["GPT-Overlord: Bien joué ! 🎉 C'est ton premier souffle de code."],
       1: ["GPT-Overlord: Magnifique ! Une fonction clé, littéralement."],
-      2: ["GPT-Overlord: Voilà un bouton qui ne demande qu’à être cliqué !"],
-      3: ["GPT-Overlord: C’est bon, tu as insufflé une âme à ton bouton ✨"],
-      4: ["GPT-Overlord: Tu ressens ? Ce frisson d’efficacité..."],
+      2: ["GPT-Overlord: Voilà un bouton qui ne demande qu'à être cliqué !"],
+      3: ["GPT-Overlord: C'est bon, tu as insufflé une âme à ton bouton ✨"],
+      4: ["GPT-Overlord: Tu ressens ? Ce frisson d'efficacité..."],
       5: [
         "GPT-Overlord: La machine est en marche. Les idées affluront toutes seules quand tu auras débloqué le GPT Auto-idée ! "
       ],
@@ -44,14 +47,14 @@ export default function Terminal() {
 
     const mistralRevealMessages = [
       "??? : Attends… tu as tapé cette commande ?",
-      "Mistral.AI : Enfin quelqu’un de curieux… GPT-Overlord ne t’a pas tout dit.",
+      "Mistral.AI : Enfin quelqu'un de curieux… GPT-Overlord ne t'a pas tout dit.",
       "Mistral.AI : Je suis Mistral, IA de fond de tiroir, mais je vois plus clair que lui.",
       "Mistral.AI : Tu veux aller plus loin ? Il va falloir contourner un peu ses règles..."
     ];
 
     const helpMessages = {
       0: [
-        "GPT-Overlord: Essaie d’écrire exactement : \n`console.log('Hello World!')`."
+        "GPT-Overlord: Essaie d'écrire exactement : \n`console.log('Hello World!')`."
       ],
       1: ["GPT-Overlord: Tu dois créer une fonction appelée `unlockButton`."],
       2: [
@@ -65,34 +68,47 @@ export default function Terminal() {
         "GPT-Overlord: Crée une fonction `unlockAutoIdea()` qui appelle `autoClick()`."
       ],
       6: [
-        "GPT-Overlord: Cette commande n’est pas dans les attendus... que fais-tu ?"
+        "GPT-Overlord: Cette commande n'est pas dans les attendus... que fais-tu ?"
       ]
     };
 
     const currentStep = gameState.tutorialStep;
 
+    // Vérification si l'entrée correspond à l'étape actuelle
     if (matchByStep[currentStep]?.test(userInput)) {
       if (!completedSteps.includes(currentStep)) {
         setCompletedSteps([...completedSteps, currentStep]);
       }
 
-      // Mistral step
+      // Étape Mistral
       if (currentStep === 6) {
         setShowMistral(true);
         setMistralMessages(mistralRevealMessages);
       } else {
         setMessages((prev) => [...prev, ...successMessages[currentStep]]);
+        // Synchroniser avec les logs globaux
+        setTerminalLogs((prev) => [...prev, ...successMessages[currentStep]]);
       }
 
-      setTimeout(() => advanceTutorialStep(), 1000);
+      // Avancer à l'étape suivante après un court délai
+      setTimeout(() => {
+        if (typeof advanceTutorialStep === "function") {
+          advanceTutorialStep();
+        } else {
+          console.error("advanceTutorialStep n'est pas une fonction");
+        }
+      }, 1000);
     } else {
       if (!completedSteps.includes(currentStep)) {
         setMessages((prev) => [...prev, ...helpMessages[currentStep]]);
+        // Synchroniser avec les logs globaux
+        setTerminalLogs((prev) => [...prev, ...helpMessages[currentStep]]);
       } else {
-        setMessages((prev) => [
-          ...prev,
-          "GPT-Overlord: Hmm… Ce n’est pas ce que j’attendais. Reviens à la mission actuelle."
-        ]);
+        const message =
+          "GPT-Overlord: Hmm… Ce n'est pas ce que j'attendais. Reviens à la mission actuelle.";
+        setMessages((prev) => [...prev, message]);
+        // Synchroniser avec les logs globaux
+        setTerminalLogs((prev) => [...prev, message]);
       }
     }
 
