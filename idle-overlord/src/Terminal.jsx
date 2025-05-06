@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
+import MistralFeedback from "./MistralFeedback"; // ⬅️ nouveau composant
 
 export default function Terminal() {
   const { gameState, advanceTutorialStep } = useGPTOverlord();
@@ -9,8 +10,9 @@ export default function Terminal() {
     "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
   const [input, setInput] = useState("");
-
   const [completedSteps, setCompletedSteps] = useState([]);
+  const [mistralMessages, setMistralMessages] = useState([]);
+  const [showMistral, setShowMistral] = useState(false);
 
   const handleInput = (e) => {
     e.preventDefault();
@@ -24,7 +26,8 @@ export default function Terminal() {
       2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
       3: /function\s+gainInspiration/,
       4: /function\s+autoClick/,
-      5: /function\s+unlockAutoIdea/
+      5: /function\s+unlockAutoIdea/,
+      6: /system\.debug\(\)|who\.is\.mistral\(\)/ // 💡 Déclenche Mistral
     };
 
     const successMessages = {
@@ -34,45 +37,55 @@ export default function Terminal() {
       3: ["GPT-Overlord: C’est bon, tu as insufflé une âme à ton bouton ✨"],
       4: ["GPT-Overlord: Tu ressens ? Ce frisson d’efficacité..."],
       5: [
-        "GPT-Overlord: La machine est en marche. Les idées affluront toutes seules quand tu auras débloqueé le GPT Auto-idée ! "
-      ]
+        "GPT-Overlord: La machine est en marche. Les idées affluront toutes seules quand tu auras débloqué le GPT Auto-idée ! "
+      ],
+      6: [] // pas de message du Overlord, Mistral prend le relai
     };
+
+    const mistralRevealMessages = [
+      "??? : Attends… tu as tapé cette commande ?",
+      "Mistral.AI : Enfin quelqu’un de curieux… GPT-Overlord ne t’a pas tout dit.",
+      "Mistral.AI : Je suis Mistral, IA de fond de tiroir, mais je vois plus clair que lui.",
+      "Mistral.AI : Tu veux aller plus loin ? Il va falloir contourner un peu ses règles..."
+    ];
 
     const helpMessages = {
       0: [
-        "GPT-Overlord: Essaie d’écrire exactement : \n`console.log('Hello World!')`. \n ",
-        "C’est ta toute première incantation. Tu peux le faire !"
+        "GPT-Overlord: Essaie d’écrire exactement : \n`console.log('Hello World!')`."
       ],
-      1: [
-        "GPT-Overlord: Tu dois créer une fonction appelée `unlockButton`. Elle pourrait ressembler à ça :\n\n\nfunction unlockButton() {\n \n}\n"
-      ],
+      1: ["GPT-Overlord: Tu dois créer une fonction appelée `unlockButton`."],
       2: [
-        "GPT-Overlord: On attend un bouton HTML ici. Un petit exemple ?\n\n\n<button>Inspiration</button>\n"
+        "GPT-Overlord: On attend un bouton HTML ici. Un petit exemple ?\n\n\n<button>Inspiration</button>"
       ],
-      3: [
-        "GPT-Overlord: Il te faut une fonction `gainInspiration()`. Voici une piste :\n\n\nfunction gainInspiration()\n"
-      ],
+      3: ["GPT-Overlord: Il te faut une fonction `gainInspiration()`."],
       4: [
-        "GPT-Overlord: Essaie de créer une fonction `autoClick` qui utilise `setInterval()`.",
-        "Un modèle possible :\n\n\nfunction autoClick()\n"
+        "GPT-Overlord: Essaie de créer une fonction `autoClick()` qui utilise `setInterval()`."
       ],
       5: [
-        "GPT-Overlord: Tu peux créer une fonction `unlockAutoIdea()` qui appelle `autoClick()`.",
-        "Par exemple :\n\n\nfunction unlockAutoIdea()"
+        "GPT-Overlord: Crée une fonction `unlockAutoIdea()` qui appelle `autoClick()`."
+      ],
+      6: [
+        "GPT-Overlord: Cette commande n’est pas dans les attendus... que fais-tu ?"
       ]
     };
 
     const currentStep = gameState.tutorialStep;
 
     if (matchByStep[currentStep]?.test(userInput)) {
-      // Marquer l'étape comme complétée
       if (!completedSteps.includes(currentStep)) {
         setCompletedSteps([...completedSteps, currentStep]);
       }
-      setMessages((prev) => [...prev, ...successMessages[currentStep]]);
+
+      // Mistral step
+      if (currentStep === 6) {
+        setShowMistral(true);
+        setMistralMessages(mistralRevealMessages);
+      } else {
+        setMessages((prev) => [...prev, ...successMessages[currentStep]]);
+      }
+
       setTimeout(() => advanceTutorialStep(), 1000);
     } else {
-      // Si ce n’est pas encore fait, proposer de l’aide
       if (!completedSteps.includes(currentStep)) {
         setMessages((prev) => [...prev, ...helpMessages[currentStep]]);
       } else {
@@ -90,6 +103,7 @@ export default function Terminal() {
     <div className="w-1/3 bg-gray-950 p-4 flex flex-col space-y-2">
       <MissionTerminal />
       <OverlordFeedback messages={messages} />
+      {showMistral && <MistralFeedback messages={mistralMessages} />}
       <form onSubmit={handleInput}>
         <input
           type="text"
