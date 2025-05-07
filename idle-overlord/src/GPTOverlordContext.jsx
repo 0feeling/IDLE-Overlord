@@ -79,7 +79,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
   });
 
   const [terminalLogs, setTerminalLogs] = useState([
-    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accéder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
+    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accéder aux tests -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
 
   const [mistralStep, setMistralStep] = useState(0);

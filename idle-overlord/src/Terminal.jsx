@@ -21,11 +21,15 @@ const matchByStep = {
 const successMessages = {
   0: ["GPT-Overlord: Bien joué ! 🎉 C'est ton premier souffle de code."],
   1: ["GPT-Overlord: Magnifique ! Une fonction clé, littéralement."],
-  2: ["GPT-Overlord: Voilà un bouton qui ne demande qu'à être cliqué !"],
-  3: ["GPT-Overlord: C'est bon, tu as insufflé une âme à ton bouton ✨"],
-  4: ["GPT-Overlord: Tu ressens ? Ce frisson d'efficacité..."],
+  2: [
+    "GPT-Overlord: Voilà un beau bouton ! Pour le moment il n'est pas encore cliquable, mais on va remedier à ça"
+  ],
+  3: [
+    "GPT-Overlord: C'est bon, maintenant tu as insufflé une âme à ton bouton ✨"
+  ],
+  4: ["GPT-Overlord: Tu ressens ? C'est le frisson de l'efficacité..."],
   5: [
-    "GPT-Overlord: La machine est en marche. Les idées affluront toutes seules quand tu auras débloqué le GPT Auto-idée ! "
+    "GPT-Overlord: La machine est en marche. Les idées afflueront toutes seules quand tu auras débloqué le GPT Auto-idée ! "
   ],
   6: [] // pas de message du Overlord, Mistral prend le relai
 };
@@ -34,9 +38,11 @@ const helpMessages = {
   0: [
     "GPT-Overlord: Essaie d'écrire exactement : \nconsole.log('Hello World!')."
   ],
-  1: ["GPT-Overlord: Tu dois créer une fonction appelée unlockButton."],
+  1: [
+    "GPT-Overlord: Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé function + SonNom()"
+  ],
   2: [
-    "GPT-Overlord: On attend un bouton HTML ici. Un petit exemple ?\n\n\n<button>Inspiration</button>"
+    "GPT-Overlord: On attend un bouton HTML ici. Attends, je t'aide : \n\n\n<button>Inspiration</button>"
   ],
   3: ["GPT-Overlord: Il te faut une fonction gainInspiration()."],
   4: [
