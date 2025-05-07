@@ -1,7 +1,7 @@
 import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 
-function UnlockAutoIdeaButton({ threshold = 10 }) {
+function UnlockAutoIdeaButton({ threshold = 50 }) {
   const { gameState, setGameState, unlockAutoIdea, logToTerminal } =
     useGPTOverlord();
   const { inspiration, autoIdeaUnlocked } = gameState;
