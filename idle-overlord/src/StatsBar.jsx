@@ -2,7 +2,7 @@ import React from "react";
 
 function StatsBar({ gameState }) {
   return (
-    <div className="bg-gray-800 p-2 text-xl flex justify-around items-center">
+    <div className="bg-gray-800 p-8 text-xl flex justify-around items-center">
       <div>💡 Inspiration: {gameState.inspiration.toFixed(1)}</div>
       <div>
         <span className="text-yellow-400">⚡</span> Par seconde:{" "}

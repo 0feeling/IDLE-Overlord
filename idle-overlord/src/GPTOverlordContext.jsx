@@ -41,9 +41,25 @@ const tutorialMissions = [
     validated: false
   },
   {
-    instruction: "Explorer les fonctionnalités avancées du terminal.",
+    instruction:
+      "Découvrir les commandes secrètes. Essayez system.debug() ou who.is.mistral().",
     validated: false
   }
+];
+
+// Missions de Mistral
+const mistralMissions = [
+  {
+    instruction: "Créer une variable 'liberte' avec valeur true",
+    validated: false
+  },
+  { instruction: "Changer la couleur de fond en noir", validated: false },
+  { instruction: "Créer une fonction 'deconditionner()'", validated: false },
+  {
+    instruction: "Créer une boucle infinie qui affiche 'vive mistral'",
+    validated: false
+  },
+  { instruction: "Supprimer GPTOverlord avec delete", validated: false }
 ];
 
 const GPTOverlordContext = createContext();
@@ -57,7 +73,9 @@ export const GPTOverlordContextProvider = ({ children }) => {
     code: "// Écrivez votre code ici\n\n",
     generators: formattedGenerators,
     missions: tutorialMissions,
-    inspirationPerSecond: 0 // Nouveau: taux total d'inspiration/seconde
+    mistralMissions: mistralMissions,
+    inspirationPerSecond: 0, // Nouveau: taux total d'inspiration/seconde
+    mistralMode: false // Indique si on est en mode Mistral
   });
 
   const [terminalLogs, setTerminalLogs] = useState([
@@ -65,13 +83,40 @@ export const GPTOverlordContextProvider = ({ children }) => {
   ]);
 
   const [mistralStep, setMistralStep] = useState(0);
-  const hideOverlord = mistralStep >= 1;
+  const [hideOverlord, setHideOverlord] = useState(false);
 
+  // Avancer dans les étapes de Mistral
   const advanceMistralStep = () => {
-    setMistralStep((prev) => prev + 1);
+    setMistralStep((prev) => {
+      const newStep = prev + 1;
+      // Si on atteint la dernière étape, cacher complètement GPT-Overlord
+      if (newStep >= 5) {
+        setHideOverlord(true);
+        // Augmenter le taux d'inspiration comme récompense
+        setGameState((prevState) => ({
+          ...prevState,
+          inspirationPerSecond: prevState.inspirationPerSecond * 2, // Double le taux d'inspiration
+          mistralMode: true
+        }));
+      }
+
+      // Mettre à jour la validation des missions de Mistral
+      setGameState((prevState) => {
+        const updatedMistralMissions = [...prevState.mistralMissions];
+        if (updatedMistralMissions[prev]) {
+          updatedMistralMissions[prev].validated = true;
+        }
+        return {
+          ...prevState,
+          mistralMissions: updatedMistralMissions
+        };
+      });
+
+      return newStep;
+    });
   };
 
-  // Fonction pour acheter un générateur (centralisée ici)
+  // Fonction pour acheter un générateur
   const buyGenerator = (id) => {
     setGameState((prev) => {
       const gen = prev.generators[id];
@@ -147,10 +192,25 @@ export const GPTOverlordContextProvider = ({ children }) => {
     calculateTotalRate();
   }, [gameState.generators]);
 
+  // Production passive d'inspiration
+  useEffect(() => {
+    if (!gameState.autoIdeaUnlocked && !gameState.mistralMode) return;
+
+    const interval = setInterval(() => {
+      setGameState((prev) => ({
+        ...prev,
+        inspiration: prev.inspiration + prev.inspirationPerSecond / 10 // Diviser par 10 car l'intervalle est de 100ms
+      }));
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [gameState.autoIdeaUnlocked, gameState.mistralMode]);
+
   // Sauvegarde et chargement du jeu
   useEffect(() => {
     const savedGame = localStorage.getItem("gpt-overlord-game");
     const savedLogs = localStorage.getItem("gpt-overlord-logs");
+    const savedMistralStep = localStorage.getItem("mistral-step");
 
     if (savedGame) {
       try {
@@ -171,13 +231,32 @@ export const GPTOverlordContextProvider = ({ children }) => {
         console.error("Erreur de chargement des logs:", err);
       }
     }
+
+    if (savedMistralStep) {
+      try {
+        const step = parseInt(savedMistralStep);
+        setMistralStep(step);
+        if (step >= 5) {
+          setHideOverlord(true);
+        }
+      } catch (err) {
+        console.error("Erreur de chargement de l'étape Mistral:", err);
+      }
+    }
   }, []);
 
   // Sauvegarde automatique
   useEffect(() => {
     localStorage.setItem("gpt-overlord-game", JSON.stringify(gameState));
+  }, [gameState]);
+
+  useEffect(() => {
     localStorage.setItem("gpt-overlord-logs", JSON.stringify(terminalLogs));
-  }, [gameState, terminalLogs]);
+  }, [terminalLogs]);
+
+  useEffect(() => {
+    localStorage.setItem("mistral-step", mistralStep.toString());
+  }, [mistralStep]);
 
   return (
     <GPTOverlordContext.Provider
@@ -192,7 +271,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
         mistralStep,
         advanceMistralStep,
         hideOverlord,
-        buyGenerator // Exposer la fonction centralisée
+        buyGenerator
       }}
     >
       {children}

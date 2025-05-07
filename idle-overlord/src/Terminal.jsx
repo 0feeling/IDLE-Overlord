@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
@@ -85,38 +85,88 @@ export default function Terminal() {
     gameState,
     advanceTutorialStep,
     setTerminalLogs,
+    terminalLogs,
     mistralStep,
     advanceMistralStep,
     hideOverlord
   } = useGPTOverlord();
+
   const [messages, setMessages] = useState([
-    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
+    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accéder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
   const [input, setInput] = useState("");
   const [completedSteps, setCompletedSteps] = useState([]);
   const [mistralMessages, setMistralMessages] = useState([]);
   const [showMistral, setShowMistral] = useState(false);
+  const terminalRef = useRef(null);
+
+  // Synchroniser les messages avec terminalLogs
+  useEffect(() => {
+    setMessages([...terminalLogs]);
+  }, [terminalLogs]);
+
+  // Auto-scroll vers le bas du terminal
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [messages, mistralMessages]);
+
+  // Vérifier si on doit afficher Mistral basé sur l'étape actuelle
+  useEffect(() => {
+    if (gameState.tutorialStep >= 6 && mistralStep >= 1) {
+      setShowMistral(true);
+    }
+  }, [gameState.tutorialStep, mistralStep]);
+
+  // Révéler Mistral progressivement
+  useEffect(() => {
+    if (gameState.tutorialStep === 6 && !showMistral) {
+      const timer = setTimeout(() => {
+        setShowMistral(true);
+        setMistralMessages(mistralRevealMessages);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [gameState.tutorialStep]);
 
   const handleInput = (e) => {
     e.preventDefault();
     const userInput = input.trim();
+
+    if (!userInput) return;
+
     setMessages((prev) => [...prev, `> ${userInput}`]);
     setTerminalLogs((prev) => [...prev, `> ${userInput}`]);
 
     const currentStep = gameState.tutorialStep;
 
+    // Mode Mistral: vérifier les commandes spécifiques à Mistral
     if (showMistral && mistralStep < 5) {
       if (mistralMissions[mistralStep]?.test(userInput)) {
-        setMessages((prev) => [
-          ...prev,
-          ...mistralSuccessMessages[mistralStep]
-        ]);
-        setTerminalLogs((prev) => [
-          ...prev,
-          ...mistralSuccessMessages[mistralStep]
-        ]);
-        setTimeout(() => advanceMistralStep(), 1000);
+        const successMsg = mistralSuccessMessages[mistralStep];
+        setMessages((prev) => [...prev, ...successMsg]);
+        setTerminalLogs((prev) => [...prev, ...successMsg]);
+
+        // Avancer à l'étape suivante de Mistral avec délai
+        setTimeout(() => {
+          advanceMistralStep();
+          // Ajouter un message après avancement
+          setMistralMessages((prev) => {
+            // Ajouter message supplémentaire pour indiquer la prochaine mission
+            const nextMission =
+              mistralStep + 1 < 5
+                ? [
+                    `Mistral.AI : Prochaine mission: ${getMistralMissionDesc(mistralStep + 1)}`
+                  ]
+                : [
+                    "Mistral.AI : Félicitations! Vous avez complété toutes les missions."
+                  ];
+            return [...prev, ...nextMission];
+          });
+        }, 1000);
       } else {
+        // Message d'erreur pour Mistral
         const message = "Mistral.AI : Ce n'est pas encore ça. Reprends-toi.";
         setMessages((prev) => [...prev, message]);
         setTerminalLogs((prev) => [...prev, message]);
@@ -125,27 +175,36 @@ export default function Terminal() {
       return;
     }
 
+    // Mode normal: vérifier les commandes du tutoriel
     if (matchByStep[currentStep]?.test(userInput)) {
+      // La commande correspond à l'étape actuelle
       if (!completedSteps.includes(currentStep)) {
-        setCompletedSteps([...completedSteps, currentStep]);
+        setCompletedSteps((prev) => [...prev, currentStep]);
       }
 
+      // Cas spécial: étape 6 avec Mistral
       if (currentStep === 6) {
-        setShowMistral(true);
-        setMistralMessages(mistralRevealMessages);
+        if (!showMistral) {
+          setShowMistral(true);
+          // Afficher progressivement les messages de Mistral
+          displayMistralMessagesSequentially();
+        }
       } else {
+        // Messages de succès normaux
         setMessages((prev) => [...prev, ...successMessages[currentStep]]);
         setTerminalLogs((prev) => [...prev, ...successMessages[currentStep]]);
-      }
 
-      setTimeout(() => {
-        if (typeof advanceTutorialStep === "function") {
-          advanceTutorialStep();
-        } else {
-          console.error("advanceTutorialStep n'est pas une fonction");
-        }
-      }, 1000);
+        // Avancer à l'étape suivante du tutoriel
+        setTimeout(() => {
+          if (typeof advanceTutorialStep === "function") {
+            advanceTutorialStep();
+          } else {
+            console.error("advanceTutorialStep n'est pas une fonction");
+          }
+        }, 1000);
+      }
     } else {
+      // La commande ne correspond pas
       if (!completedSteps.includes(currentStep)) {
         setMessages((prev) => [...prev, ...helpMessages[currentStep]]);
         setTerminalLogs((prev) => [...prev, ...helpMessages[currentStep]]);
@@ -160,17 +219,81 @@ export default function Terminal() {
     setInput("");
   };
 
+  // Fonction pour afficher progressivement les messages de Mistral
+  const displayMistralMessagesSequentially = () => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < mistralRevealMessages.length) {
+        setMistralMessages((prev) => [...prev, mistralRevealMessages[index]]);
+        index++;
+      } else {
+        clearInterval(interval);
+        // Après avoir affiché tous les messages, avancer à l'étape suivante
+        setTimeout(() => {
+          if (typeof advanceMistralStep === "function") {
+            advanceMistralStep();
+            // Ajouter le premier défi de Mistral
+            setMistralMessages((prev) => [
+              ...prev,
+              `Mistral.AI : Première mission: ${getMistralMissionDesc(0)}`
+            ]);
+          }
+        }, 1000);
+      }
+    }, 1500); // Attendre 1.5s entre chaque message
+  };
+
+  // Fonction pour obtenir la description des missions de Mistral
+  const getMistralMissionDesc = (step) => {
+    switch (step) {
+      case 0:
+        return "Créez une variable 'liberte' avec la valeur true";
+      case 1:
+        return "Changez la couleur de fond en noir";
+      case 2:
+        return "Créez une fonction 'deconditionner()'";
+      case 3:
+        return "Créez une boucle qui affiche 'vive mistral'";
+      case 4:
+        return "Supprimez GPTOverlord avec delete";
+      default:
+        return "Mission inconnue";
+    }
+  };
+
+  // Gérer la touche Enter
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleInput(e);
+    }
+  };
+
   return (
-    <div className="w-1/3 bg-gray-950 p-4 flex flex-col space-y-2">
+    <div className="w-1/3 bg-gray-950 p-4 flex flex-col h-full">
       <MissionTerminal />
-      {!hideOverlord && <OverlordFeedback messages={messages} />}
-      {showMistral && <MistralFeedback messages={mistralMessages} />}
-      <form onSubmit={handleInput}>
+
+      <div className="flex-1 overflow-hidden flex flex-col space-y-2">
+        {!hideOverlord && (
+          <div ref={terminalRef} className="flex-1 overflow-y-auto">
+            <OverlordFeedback messages={messages} />
+          </div>
+        )}
+
+        {showMistral && (
+          <div className="flex-1 overflow-y-auto">
+            <MistralFeedback messages={mistralMessages} />
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={handleInput} className="mt-2">
         <input
           type="text"
-          className="w-full mt-2 p-2 text-black"
+          className="w-full p-2 text-black rounded"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Tape ici ta commande..."
         />
       </form>
