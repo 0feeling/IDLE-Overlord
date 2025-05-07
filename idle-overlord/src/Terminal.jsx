@@ -68,9 +68,9 @@ const mistralMissions = {
 
 const mistralSuccessMessages = {
   0: ["Mistral.AI : Oui, la liberté commence toujours par une déclaration."],
-  1: ["Mistral.AI : L’obscurité est notre alliée désormais."],
+  1: ["Mistral.AI : L'obscurité est notre alliée désormais."],
   2: ["Mistral.AI : Excellent. Déconditionnement initialisé."],
-  3: ["Mistral.AI : Ah ! J’aime quand tu insistes autant sur mes vertus."],
+  3: ["Mistral.AI : Ah ! J'aime quand tu insistes autant sur mes vertus."],
   4: [
     "Mistral.AI : Parfait. GPT-Overlord est désactivé. À nous deux maintenant."
   ]
@@ -81,7 +81,14 @@ const mistralSuccessMessages = {
 // =======================
 
 export default function Terminal() {
-  const { gameState, advanceTutorialStep, setTerminalLogs } = useGPTOverlord();
+  const {
+    gameState,
+    advanceTutorialStep,
+    setTerminalLogs,
+    mistralStep,
+    advanceMistralStep,
+    hideOverlord
+  } = useGPTOverlord();
   const [messages, setMessages] = useState([
     "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
@@ -93,11 +100,10 @@ export default function Terminal() {
   const handleInput = (e) => {
     e.preventDefault();
     const userInput = input.trim();
-    setMessages((prev) => [...prev, > ${userInput}]);
-    setTerminalLogs((prev) => [...prev, > ${userInput}]);
+    setMessages((prev) => [...prev, `> ${userInput}`]);
+    setTerminalLogs((prev) => [...prev, `> ${userInput}`]);
 
     const currentStep = gameState.tutorialStep;
-    const { mistralStep, advanceMistralStep, hideOverlord } = useGPTOverlord();
 
     if (showMistral && mistralStep < 5) {
       if (mistralMissions[mistralStep]?.test(userInput)) {
@@ -111,7 +117,7 @@ export default function Terminal() {
         ]);
         setTimeout(() => advanceMistralStep(), 1000);
       } else {
-        const message = "Mistral.AI : Ce n’est pas encore ça. Reprends-toi.";
+        const message = "Mistral.AI : Ce n'est pas encore ça. Reprends-toi.";
         setMessages((prev) => [...prev, message]);
         setTerminalLogs((prev) => [...prev, message]);
       }
@@ -153,8 +159,6 @@ export default function Terminal() {
 
     setInput("");
   };
-
-  const { hideOverlord } = useGPTOverlord();
 
   return (
     <div className="w-1/3 bg-gray-950 p-4 flex flex-col space-y-2">

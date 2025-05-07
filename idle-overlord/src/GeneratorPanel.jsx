@@ -1,12 +1,17 @@
 function GeneratorPanel({ id, data, inspiration, buyGenerator }) {
   const cost = Math.floor(data.baseCost * Math.pow(1.15, data.count));
+  const production = (data.rate * data.count).toFixed(1);
+  const nextProduction = (data.rate * (data.count + 1)).toFixed(1);
 
   return (
     <div className="bg-gray-800 p-3 rounded mb-2 flex justify-between items-center">
       <div>
         <div className="font-bold">{data.name}</div>
         <div className="text-sm text-gray-400">
-          {data.count} instance(s) – {data.rate}💡/s
+          {data.count} instance(s) • {production} 💡/s
+        </div>
+        <div className="text-xs text-gray-500">
+          Prochain: +{data.rate} 💡/s (Total: {nextProduction})
         </div>
       </div>
       <button

@@ -1,23 +1,27 @@
 import React, { useEffect } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
-import { calculateTotalRate } from "./utils";
 
 function PassiveInspiration({ interval = 1000 }) {
   const { gameState, setGameState } = useGPTOverlord();
-  const totalRate = calculateTotalRate(gameState.generators);
 
   useEffect(() => {
-    if (gameState.tutorialStep < 4 || !gameState.autoIdeaUnlocked) return;
+    // N'activer que si l'autoIdea est débloquée
+    if (!gameState.autoIdeaUnlocked) return;
 
     const id = setInterval(() => {
       setGameState((prev) => ({
         ...prev,
-        inspiration: prev.inspiration + totalRate
+        inspiration: prev.inspiration + prev.inspirationPerSecond
       }));
     }, interval);
 
     return () => clearInterval(id);
-  }, [gameState.autoIdeaUnlocked, gameState.tutorialStep, interval, totalRate]);
+  }, [
+    gameState.autoIdeaUnlocked,
+    setGameState,
+    interval,
+    gameState.inspirationPerSecond
+  ]);
 
   return null;
 }

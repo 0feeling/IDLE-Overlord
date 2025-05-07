@@ -9,7 +9,7 @@ generatorsData.forEach((gen) => {
     baseCost: gen.baseCost,
     rate: gen.baseInspirationPerSecond,
     count: gen.quantity || 0,
-    unlocked: gen.unlocked || false
+    unlocked: true // Tous débloqués par défaut pour simplifier
   };
 });
 
@@ -51,16 +51,17 @@ export const useGPTOverlord = () => useContext(GPTOverlordContext);
 
 export const GPTOverlordContextProvider = ({ children }) => {
   const [gameState, setGameState] = useState({
-    inspiration: 0,
+    inspiration: 10, // Démarrer avec un peu d'inspiration pour pouvoir acheter
     autoIdeaUnlocked: false,
     tutorialStep: 0,
-    code: "",
+    code: "// Écrivez votre code ici\n\n",
     generators: formattedGenerators,
-    missions: tutorialMissions
+    missions: tutorialMissions,
+    inspirationPerSecond: 0 // Nouveau: taux total d'inspiration/seconde
   });
 
   const [terminalLogs, setTerminalLogs] = useState([
-    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accèder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
+    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accéder aux épreuves -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
   ]);
 
   const [mistralStep, setMistralStep] = useState(0);
@@ -68,6 +69,34 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   const advanceMistralStep = () => {
     setMistralStep((prev) => prev + 1);
+  };
+
+  // Fonction pour acheter un générateur (centralisée ici)
+  const buyGenerator = (id) => {
+    setGameState((prev) => {
+      const gen = prev.generators[id];
+      if (!gen) return prev;
+
+      const cost = Math.floor(gen.baseCost * Math.pow(1.15, gen.count));
+      if (prev.inspiration < cost) return prev;
+
+      // Mise à jour du taux d'inspiration
+      const newCount = gen.count + 1;
+      const newRate = prev.inspirationPerSecond + gen.rate;
+
+      return {
+        ...prev,
+        inspiration: prev.inspiration - cost,
+        inspirationPerSecond: newRate,
+        generators: {
+          ...prev.generators,
+          [id]: {
+            ...gen,
+            count: newCount
+          }
+        }
+      };
+    });
   };
 
   // Fonction pour avancer dans le tutoriel
@@ -99,11 +128,27 @@ export const GPTOverlordContextProvider = ({ children }) => {
     setTerminalLogs((prev) => [...prev, message]);
   };
 
+  // Calculer le taux total d'inspiration à chaque changement de générateurs
+  useEffect(() => {
+    const calculateTotalRate = () => {
+      const totalRate = Object.values(gameState.generators).reduce(
+        (acc, gen) => acc + gen.rate * gen.count,
+        0
+      );
+
+      if (totalRate !== gameState.inspirationPerSecond) {
+        setGameState((prev) => ({
+          ...prev,
+          inspirationPerSecond: totalRate
+        }));
+      }
+    };
+
+    calculateTotalRate();
+  }, [gameState.generators]);
+
   // Sauvegarde et chargement du jeu
   useEffect(() => {
-    // Désactiver pour les tests
-    // localStorage.clear();
-
     const savedGame = localStorage.getItem("gpt-overlord-game");
     const savedLogs = localStorage.getItem("gpt-overlord-logs");
 
@@ -146,7 +191,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         logToTerminal,
         mistralStep,
         advanceMistralStep,
-        hideOverlord
+        hideOverlord,
+        buyGenerator // Exposer la fonction centralisée
       }}
     >
       {children}
