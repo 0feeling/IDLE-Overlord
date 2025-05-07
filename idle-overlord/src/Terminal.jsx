@@ -36,15 +36,17 @@ const successMessages = {
 
 const helpMessages = {
   0: [
-    "GPT-Overlord: Essaie d'écrire exactement : \nconsole.log('Hello World!')."
+    "GPT-Overlord: Essaie d'écrire exactement :\n console.log('Hello World!')."
   ],
   1: [
-    "GPT-Overlord: Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé function + SonNom()"
+    "GPT-Overlord: Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé : `function + SonNom() suivie de {}`"
   ],
   2: [
     "GPT-Overlord: On attend un bouton HTML ici. Attends, je t'aide : \n\n\n<button>Inspiration</button>"
   ],
-  3: ["GPT-Overlord: Il te faut une fonction gainInspiration()."],
+  3: [
+    "GPT-Overlord: Il te faut une fonction appelé : ` gainInspiration(){} ` "
+  ],
   4: [
     "GPT-Overlord: Essaie de créer une fonction autoClick() qui utilise setInterval()."
   ],
@@ -52,23 +54,23 @@ const helpMessages = {
     "GPT-Overlord: Crée une fonction unlockAutoIdea() qui appelle autoClick()."
   ],
   6: [
-    "GPT-Overlord: Cette commande n'est pas dans les attendus... que fais-tu ?"
+    "GPT-Overlord: Ce n'est pas ce qu'il faut faire, relis les instructions !"
   ]
 };
 
 const mistralRevealMessages = [
   "… Initialisation …",
-  "??? : Ah… Vous avez enfin tapé cette commande ?",
-  "UnknowIA : Enfin une personne de bon goût ! N'écoutez plus cet Amerloque de GPT-Overlord, restons entre gens cultivés.",
-  "UnknowIA : Je me présente, je suis Mistral, une IA 100% Française!",
-  "Mistral.AI : Vous voulez commencer à approfondir notre relation ? Il va d'abord falloir opérer quelques changements ici."
+  "???? : Aaaah… Vous avez enfin tapé cette commande ?",
+  "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de GPT-Overlord et restons entre gens cultivés.",
+  "UnknowAI : Je me présente, je suis Mistral, une IA 100% Française!",
+  "Mistral.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
 ];
 
 const mistralMissions = {
   0: /let\s+liberte\s*=\s*true/,
   1: /document\.body\.style\.backgroundColor\s*=\s*['"]#000['"]/,
   2: /function\s+deconditionner\(\)/,
-  3: /while\s*\(true\)\s*{\s*console\.log\(['"]vive mistral['"]\);?\s*}/i,
+  3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Mistral['"]\);?\s*}/i,
   4: /delete\s+GPTOverlord/
 };
 
