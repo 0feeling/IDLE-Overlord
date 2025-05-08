@@ -17,32 +17,37 @@ generatorsData.forEach((gen) => {
 const tutorialMissions = [
   {
     instruction:
-      "Utiliser console.log('Hello World!') pour émettre une première sortie.",
-    validated: false
-  },
-  { instruction: "Créer une fonction nommée unlockButton.", validated: false },
-  {
-    instruction: "Ajouter un élément cliquable de type <button>.",
+      "Générer une sortie explicite dans la console, contenant une chaîne de caractères standard utilisée pour la validation d’un environnement d’exécution.",
     validated: false
   },
   {
     instruction:
-      "Définir une fonction nommée gainInspiration() et l'associer à l'action du bouton.",
+      "Déclarer une entité procédurale nommée selon la convention camelCase, chargée de rendre accessible une interface bloquée initialement.",
     validated: false
   },
   {
     instruction:
-      "Créer une fonction automatique de clic. Nom suggéré : autoClick().",
+      "Ajouter à la structure du document HTML un élément interactif de type bouton affichant une instruction textuelle explicite.",
     validated: false
   },
   {
     instruction:
-      "Créer la fonction unlockAutoIdea() pour activer le mécanisme de clic automatique.",
+      "Définir une fonction identifiable, destinée à être déclenchée par l’action utilisateur sur l’élément interactif. Son rôle est de produire un effet assimilable à une acquisition de ressource.",
     validated: false
   },
   {
     instruction:
-      "Découvrir les commandes secrètes. Essayez system.debug() ou who.is.mistral().",
+      "Établir une routine nommée, conçue pour simuler un déclenchement automatique périodique via une boucle temporelle implicite.",
+    validated: false
+  },
+  {
+    instruction:
+      "Créer une fonction distincte permettant l’activation conditionnelle du processus d’exécution automatique défini précédemment.",
+    validated: false
+  },
+  {
+    instruction:
+      "Provoquer l’exécution manuelle d’au moins une interface interne exposée à l’espace global, identifiée par un nom composé hiérarchique.",
     validated: false
   }
 ];
@@ -67,7 +72,7 @@ export const useGPTOverlord = () => useContext(GPTOverlordContext);
 
 export const GPTOverlordContextProvider = ({ children }) => {
   const [gameState, setGameState] = useState({
-    inspiration: 10, // Démarrer avec un peu d'inspiration pour pouvoir acheter
+    inspiration: 0, //valeur de départ
     autoIdeaUnlocked: false,
     tutorialStep: 0,
     code: "", // Initialiser avec une chaîne vide

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
+import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 
 // Constantes pour les vérifications de code
 const matchByStep = {
@@ -24,32 +25,32 @@ const mistralMissions = {
 // Solutions exactes à copier-coller pour chaque étape
 const helpMessages = {
   0: [
-    "Essaie d'écrire exactement : console.log('Hello World!').",
-    "Code correct pour cette mission: console.log('Hello World!')"
+    "Allez, je t’aide ! Tu dois écrire `console.log('Hello World!')` — avec les guillemets simples et le point-virgule à la fin si tu veux faire propre. Tu vas y arriver 🌈",
+    "Essaie d’écrire `console.log('Hello World!')` tout simplement. C’est comme envoyer une carte postale à la console 📬"
   ],
   1: [
-    "Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé : `function + SonNom() suivie de {}`",
-    "Code correct pour cette mission: function unlockButton() {}"
+    "Presque ! Pour créer une fonction, tu écris `function unlockButton()` suivi de `{}`. Tu n’as pas besoin de mettre quoi que ce soit dedans pour le moment 💛",
+    "Tu peux écrire quelque chose comme `function unlockButton() {}` — c’est une promesse que tu feras quelque chose avec plus tard 😉"
   ],
   2: [
-    "On attend un bouton HTML ici. Attends, je t'aide :",
-    "Code correct pour cette mission: <button>Inspiration</button>"
+    "Tu peux ajouter dans ton HTML : `<button>Inspiration</button>` — tout doux, tout simple ! Le bouton n’a pas besoin de faire quoi que ce soit pour l’instant 🌸",
+    "Essaie d’écrire `<button>Inspiration</button>` dans ton fichier HTML. Ce petit bouton deviendra un déclencheur magique bientôt ! 🪄"
   ],
   3: [
-    "Il te faut une fonction appelée : `gainInspiration(){}`",
-    "Code correct pour cette mission: function gainInspiration() {}"
+    'Essaie de faire une fonction avec `function gainInspiration()` suivie de `{}`. Et ensuite, ajoute à ton bouton un `onclick="gainInspiration()"` ! Tu verras, ça cliquera tout seul 🎯',
+    'Tu peux écrire une fonction `function gainInspiration() {}` et ajouter `onclick="gainInspiration()"` dans ton `<button>`. C’est comme donner une action à ton bouton ! 🧩'
   ],
   4: [
-    "Essaie de créer une fonction autoClick() qui utilise setInterval().",
-    "Code correct pour cette mission: function autoClick() { setInterval(gainInspiration, 1000); }"
+    "Tu vas y arriver ! Il faut écrire une fonction `autoClick()` et à l’intérieur mettre `setInterval(gainInspiration, 1000);` — c’est lui qui cliquera tout seul pour toi ⏱️",
+    "Essaie une fonction comme `function autoClick() { setInterval(gainInspiration, 1000); }`. C’est comme un réveil qui sonne toutes les secondes ⏰"
   ],
   5: [
-    "Crée une fonction unlockAutoIdea() qui appelle autoClick().",
-    "Code correct pour cette mission: function unlockAutoIdea() { autoClick(); }"
+    "Courage ! Crée une fonction `unlockAutoIdea()` qui appelle juste `autoClick()` à l’intérieur. Une ligne suffit ! C’est le bouton ‘GO’ de ta machine à idées 🏁",
+    "Tu peux écrire `function unlockAutoIdea() { autoClick(); }` — c’est une fonction qui appuie sur le bouton ‘clic automatique’ pour toi 💫"
   ],
   6: [
-    "Essaie d'utiliser system.debug() ou who.is.mistral() pour découvrir un secret.",
-    "Code correct pour cette mission: who.is.mistral()"
+    "Essaie d’écrire `who.is.mistral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
+    "Tu peux taper `who.is.mistral()` — tu risques d’apprendre un truc étonnant 👽"
   ]
 };
 
@@ -304,12 +305,12 @@ function Editor({ gameState, setGameState }) {
 
       <textarea
         ref={editorRef}
-        className="w-full h-64 bg-white text-black p-4 font-mono text-sm resize-none outline-none border-b border-gray-700"
-        placeholder="// Écrivez votre code ici\n\n" // Use placeholder instead of value
+        className="flex-1 bg-white text-black p-4 font-mono text-sm resize-none outline-none border-b border-gray-700"
+        placeholder="// Écrivez votre code ici"
         onChange={handleCodeChange}
         onKeyDown={handleKeyDown}
         spellCheck="false"
-        value={code} // S'assurer que la valeur est bien liée
+        value={code}
       />
 
       {feedback && (
@@ -325,6 +326,9 @@ function Editor({ gameState, setGameState }) {
           {feedback}
         </div>
       )}
+
+      {/* Intégration du panneau de missions directement dans l'éditeur */}
+      <MissionPanel />
     </div>
   );
 }
