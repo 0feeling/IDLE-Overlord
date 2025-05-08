@@ -44,13 +44,13 @@ export default function Terminal() {
   }, [messagesGPT, messagesMistral]);
 
   useEffect(() => {
-    if (gameState.tutorialStep >= 6 && mistralStep >= 1) {
+    if (gameState.tutorialStep >= 7 && mistralStep >= 1) {
       setShowMistral(true);
     }
   }, [gameState.tutorialStep, mistralStep]);
 
   useEffect(() => {
-    if (gameState.tutorialStep === 6 && !showMistral && mistralStep === 0) {
+    if (gameState.tutorialStep === 7 && !showMistral && mistralStep === 0) {
       const timer = setTimeout(() => {
         setShowMistral(true);
         setMessagesMistral((prev) => [

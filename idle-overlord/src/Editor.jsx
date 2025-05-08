@@ -86,9 +86,6 @@ function Editor({ gameState, setGameState }) {
   };
 
   const handleCodeExecution = () => {
-    // Effacer les précédents feedbacks
-    setFeedback("");
-
     const currentStep = gameState.mistralMode ? -1 : gameState.tutorialStep;
 
     // En mode Mistral
