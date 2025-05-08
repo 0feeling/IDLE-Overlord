@@ -22,7 +22,9 @@ function AllGeneratorsPanel() {
 
   return (
     <div className="bg-gray-900 p-4 overflow-y-auto h-full">
-      <h2 className="text-xl font-bold mb-4">Générateurs d'inspiration</h2>
+      <h2 className="text-xl font-bold mb-4">
+        Générateurs Automatiques d'Inspirations
+      </h2>
 
       <InspirationRateDisplay />
 

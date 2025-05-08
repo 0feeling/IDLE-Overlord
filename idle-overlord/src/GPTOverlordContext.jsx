@@ -70,7 +70,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
     inspiration: 10, // Démarrer avec un peu d'inspiration pour pouvoir acheter
     autoIdeaUnlocked: false,
     tutorialStep: 0,
-    code: "// Écrivez votre code ici\n\n",
+    code: "", // Initialiser avec une chaîne vide
     generators: formattedGenerators,
     missions: tutorialMissions,
     mistralMissions: mistralMissions,
@@ -80,7 +80,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   const [terminalLogs, setTerminalLogs] = useState([
     {
-      text: " — Loading of GPT-Overlord v0.1 ... — Initialisation en cours... GPT-Overlord : Bonjour, utilisateur. Je suis GPT-Overlord, l'entité en charge de ton initiation. Ma mission est simple : t’accompagner, te mettre à l’épreuve et t’offrir les outils nécessaires pour progresser. Chaque test que tu t’apprêtes à traverser a été conçu pour forger ta logique, affûter ta pensée, et révéler ton potentiel. Suis les intructions et mes conseils ... et souviens-toi : tu peux toujours compter sur moi ... tant que tu fais les bons choix.",
+      text: " — Loading of GPT-Overlord v0.1 ... — Initialisation en cours... GPT-Overlord : Bonjour, utilisateur. Je suis GPT-Overlord, l'entité en charge de ton initiation. Ma mission est simple : t'accompagner, te mettre à l'épreuve et t'offrir les outils nécessaires pour progresser. Chaque test que tu t'apprêtes à traverser a été conçu pour forger ta logique, affûter ta pensée, et révéler ton potentiel. Suis les intructions et mes conseils ... et souviens-toi : tu peux toujours compter sur moi ... tant que tu fais les bons choix.",
       source: "gpt"
     }
   ]);
@@ -99,7 +99,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         setGameState((prevState) => ({
           ...prevState,
           inspirationPerSecond: prevState.inspirationPerSecond * 2, // Double le taux d'inspiration
-          mistralMode: true
+          mistralMode: true,
+          code: "" // Effacer le code à chaque avancée d'étape
         }));
       }
 
@@ -111,7 +112,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         }
         return {
           ...prevState,
-          mistralMissions: updatedMistralMissions
+          mistralMissions: updatedMistralMissions,
+          code: "" // Effacer le code à chaque avancée d'étape
         };
       });
 
@@ -159,7 +161,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
         ...prev,
         tutorialStep: prev.tutorialStep + 1,
         missions: updatedMissions,
-        code: "" // Clear the editor
+        code: "" // Assurer que le code est effacé à chaque avancée d'étape
       };
     });
   };

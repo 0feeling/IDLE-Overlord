@@ -108,6 +108,23 @@ function Editor({ gameState, setGameState }) {
     }));
   };
 
+  // Fonction pour effacer l'éditeur
+  const clearEditor = () => {
+    setCode("");
+    setGameState((prev) => ({
+      ...prev,
+      code: ""
+    }));
+
+    // Optionnel : effacer aussi le feedback
+    setFeedback("");
+
+    // Optionnel : replacer le focus sur l'éditeur
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  };
+
   const handleCodeExecution = () => {
     const currentStep = gameState.mistralMode ? -1 : gameState.tutorialStep;
 
@@ -141,6 +158,7 @@ function Editor({ gameState, setGameState }) {
           mistralStep: 1,
           code: "" // Clear the editor
         }));
+        clearEditor(); // Utiliser notre nouvelle fonction ici
       }, 1000);
       return;
     }
@@ -163,7 +181,7 @@ function Editor({ gameState, setGameState }) {
         });
 
         advanceMistralStep();
-        setCode(""); // Clear the editor here
+        clearEditor(); // Utiliser notre nouvelle fonction ici
       } else {
         // Erreur pour la mission Mistral
         setFeedbackType("error");
@@ -207,7 +225,7 @@ function Editor({ gameState, setGameState }) {
             mistralStep: 1,
             code: "" // Clear the editor
           }));
-          setCode(""); // Clear the editor here
+          clearEditor(); // Utiliser notre nouvelle fonction ici
         }, 1000);
       } else {
         // Messages de succès normaux et avancement à l'étape suivante
@@ -218,6 +236,7 @@ function Editor({ gameState, setGameState }) {
         });
 
         advanceTutorialStep();
+        clearEditor(); // Utiliser notre nouvelle fonction ici
         setFeedback(""); // Effacer le feedback après avancement
       }
     } else {
@@ -290,6 +309,7 @@ function Editor({ gameState, setGameState }) {
         onChange={handleCodeChange}
         onKeyDown={handleKeyDown}
         spellCheck="false"
+        value={code} // S'assurer que la valeur est bien liée
       />
 
       {feedback && (
