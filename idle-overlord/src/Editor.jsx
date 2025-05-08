@@ -20,37 +20,58 @@ const mistralMissions = {
   4: /delete\s+GPTOverlord/
 };
 
+// Solutions exactes à copier-coller pour chaque étape
 const helpMessages = {
-  0: ["Essaie d'écrire exactement : console.log('Hello World!')."],
+  0: [
+    "Essaie d'écrire exactement : console.log('Hello World!').",
+    "Code correct pour cette mission: console.log('Hello World!')"
+  ],
   1: [
-    "Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé : `function + SonNom() suivie de {}`"
+    "Tu dois créer une fonction appelée unlockButton. Pour créer une fonction utilise le mot-clé : `function + SonNom() suivie de {}`",
+    "Code correct pour cette mission: function unlockButton() {}"
   ],
   2: [
-    "On attend un bouton HTML ici. Attends, je t'aide : \n\n<button>Inspiration</button>"
+    "On attend un bouton HTML ici. Attends, je t'aide :",
+    "Code correct pour cette mission: <button>Inspiration</button>"
   ],
-  3: ["Il te faut une fonction appelée : `gainInspiration(){}`"],
-  4: ["Essaie de créer une fonction autoClick() qui utilise setInterval()."],
-  5: ["Crée une fonction unlockAutoIdea() qui appelle autoClick()."],
+  3: [
+    "Il te faut une fonction appelée : `gainInspiration(){}`",
+    "Code correct pour cette mission: function gainInspiration() {}"
+  ],
+  4: [
+    "Essaie de créer une fonction autoClick() qui utilise setInterval().",
+    "Code correct pour cette mission: function autoClick() { setInterval(gainInspiration, 1000); }"
+  ],
+  5: [
+    "Crée une fonction unlockAutoIdea() qui appelle autoClick().",
+    "Code correct pour cette mission: function unlockAutoIdea() { autoClick(); }"
+  ],
   6: [
-    "Essaie d'utiliser system.debug() ou who.is.mistral() pour découvrir un secret."
+    "Essaie d'utiliser system.debug() ou who.is.mistral() pour découvrir un secret.",
+    "Code correct pour cette mission: who.is.mistral()"
   ]
 };
 
 const mistralHelpMessages = {
   0: [
-    "Tu dois créer une variable nommée 'liberte' avec la valeur true. Exemple: let liberte = true"
+    "Tu dois créer une variable nommée 'liberte' avec la valeur true. Exemple: let liberte = true",
+    "Code correct pour cette mission: let liberte = true"
   ],
   1: [
-    "Change la couleur de fond en noir avec document.body.style.backgroundColor = '#000'"
+    "Change la couleur de fond en noir avec document.body.style.backgroundColor = '#000'",
+    "Code correct pour cette mission: document.body.style.backgroundColor = '#000'"
   ],
   2: [
-    "Crée une fonction nommée 'deconditionner'. Exemple: function deconditionner() { ... }"
+    "Crée une fonction nommée 'deconditionner'. Exemple: function deconditionner() { ... }",
+    "Code correct pour cette mission: function deconditionner() {}"
   ],
   3: [
-    "Crée une boucle infinie qui affiche 'vive mistral'. Utilise while(true) { ... }"
+    "Crée une boucle infinie qui affiche 'vive mistral'. Utilise while(true) { ... }",
+    "Code correct pour cette mission: while(true) { console.log('Vive Mistral'); }"
   ],
   4: [
-    "Supprime GPTOverlord avec l'opérateur delete. Exemple: delete GPTOverlord"
+    "Supprime GPTOverlord avec l'opérateur delete. Exemple: delete GPTOverlord",
+    "Code correct pour cette mission: delete GPTOverlord"
   ]
 };
 
@@ -96,11 +117,14 @@ function Editor({ gameState, setGameState }) {
       if (mistralMissions[mistralStep]?.test(code)) {
         // Succès pour la mission Mistral
         setFeedbackType("success");
-        setFeedback("Mission accomplie! Bravo!");
+        setFeedback("Code correct");
 
-        // Envoyer un message au terminal
+        // Envoyer un message au terminal avec la solution
         const successMessage = `Mistral.AI : Excellente implémentation!`;
-        logToTerminal(successMessage);
+        logToTerminal({
+          text: successMessage,
+          source: "mistral"
+        });
 
         setTimeout(() => {
           advanceMistralStep();
@@ -108,11 +132,14 @@ function Editor({ gameState, setGameState }) {
       } else {
         // Erreur pour la mission Mistral
         setFeedbackType("error");
-        setFeedback(mistralHelpMessages[mistralStep][0]);
+        setFeedback("Code incorrect");
 
-        // Envoyer un message d'erreur au terminal
-        const errorMessage = `Mistral.AI : Ce n'est pas encore ça. Reprends-toi.`;
-        logToTerminal(errorMessage);
+        // Envoyer message d'erreur au terminal avec la solution
+        const errorMessage = `Mistral.AI : Ce n'est pas encore ça. Reprends-toi. ${mistralHelpMessages[mistralStep][1] || ""}`;
+        logToTerminal({
+          text: errorMessage,
+          source: "mistral"
+        });
       }
       return;
     }
@@ -121,17 +148,23 @@ function Editor({ gameState, setGameState }) {
     if (matchByStep[currentStep]?.test(code)) {
       // Succès pour l'étape actuelle
       setFeedbackType("success");
-      setFeedback("Bravo! Code correct!");
+      setFeedback("Code correct");
 
       // Cas spécial: étape 6 avec Mistral
       if (currentStep === 6) {
         // La gestion de Mistral se fait dans Terminal.jsx
         const message = "Commande secrète détectée...";
-        logToTerminal(message);
+        logToTerminal({
+          text: message,
+          source: "gpt"
+        });
       } else {
         // Messages de succès normaux et avancement à l'étape suivante
         const successMessage = `GPT-Overlord: Code validé! Passons à l'étape suivante.`;
-        logToTerminal(successMessage);
+        logToTerminal({
+          text: successMessage,
+          source: "gpt"
+        });
 
         setTimeout(() => {
           advanceTutorialStep();
@@ -139,13 +172,16 @@ function Editor({ gameState, setGameState }) {
         }, 1000);
       }
     } else {
-      // Erreur - afficher message d'aide
+      // Erreur - afficher message simple
       setFeedbackType("error");
-      setFeedback(helpMessages[currentStep][0]);
+      setFeedback("Code incorrect");
 
-      // Envoyer message d'erreur au terminal
-      const errorMessage = `GPT-Overlord: Ce n'est pas ce que j'attendais. Essaie encore.`;
-      logToTerminal(errorMessage);
+      // Envoyer message d'erreur au terminal avec la solution
+      const errorMessage = `GPT-Overlord: Ce n'est pas ce que j'attendais. Essaie encore. ${helpMessages[currentStep][1] || ""}`;
+      logToTerminal({
+        text: errorMessage,
+        source: "gpt"
+      });
     }
   };
 
