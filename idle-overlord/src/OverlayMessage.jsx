@@ -18,12 +18,12 @@ function OverlayMessage({ gameState }) {
   if (!showMessage) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-xl p-4 z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 border border-white flex items-center justify-center text-white text-xl p-4 z-50">
       <div className="bg-gray-900 p-6 rounded-md shadow-lg">
         <h2 className="font-bold mb-2">GPT-Overlord</h2>
         <p>
-          Félicitations ! Tu as débloqué le 🧠 GPT Auto-idée 🧠 L'inspiration te
-          vient toute seule{" "}
+          Félicitations ! Tu as débloqué le GPT Auto-idée ! 🧠 L'inspiration te
+          vient toute seule via les Générateurs{" "}
         </p>
       </div>
     </div>

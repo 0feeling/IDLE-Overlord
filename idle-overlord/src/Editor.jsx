@@ -3,13 +3,14 @@ import { useGPTOverlord } from "./GPTOverlordContext";
 
 // Constantes pour les vérifications de code
 const matchByStep = {
-  0: /console\.log\(['"]Hello World!['"]\)/,
+  0: /console\.log\s*\(\s*['"]Hello World!["']\s*\)/,
   1: /function\s+unlockButton/,
   2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
   3: /function\s+gainInspiration/,
   4: /function\s+autoClick/,
   5: /function\s+unlockAutoIdea/,
-  6: /system\.debug\(\)|who\.is\.mistral\(\)/ // Déclenche Mistral
+  6: /(system\.debug\(.*\)|who\.is\.mistral\(.*\))/
+  // Déclenche Mistral
 };
 
 const mistralMissions = {
@@ -80,7 +81,8 @@ function Editor({ gameState, setGameState }) {
     logToTerminal,
     advanceTutorialStep,
     mistralStep,
-    advanceMistralStep
+    advanceMistralStep,
+    setGameState: setContextGameState
   } = useGPTOverlord();
 
   const [code, setCode] = useState(gameState.code || "");
@@ -109,12 +111,46 @@ function Editor({ gameState, setGameState }) {
   const handleCodeExecution = () => {
     const currentStep = gameState.mistralMode ? -1 : gameState.tutorialStep;
 
+    // Clean the code
+    // const cleanedCode = code.trim().replace(/[^a-zA-Z0-9\s(){}<>='/".;]/g, "");
+    const cleanedCode = code; // Temporarily remove the cleaning code
+
+    console.log("currentStep:", currentStep); // Add this line to log the value of currentStep
+
+    // Check for secret commands
+    if (
+      gameState.tutorialStep >= 6 &&
+      (code.includes("system.debug()") || code.includes("who.is.mistral()"))
+    ) {
+      // Déclencher l'apparition de Mistral
+      const message = "Commande secrète détectée...";
+      logToTerminal({
+        text: message,
+        source: "gpt"
+      });
+
+      // Avancer le tutoriel à l'étape 7 pour activer Mistral
+      setTimeout(() => {
+        advanceTutorialStep();
+        // Mettre à jour l'état du jeu pour activer Mistral
+        setGameState((prev) => ({
+          // Use setGameState instead of setContextGameState
+          ...prev,
+          tutorialStep: 7, // S'assurer que l'étape est bien 7
+          mistralMode: true, // Activer explicitement le mode Mistral
+          mistralStep: 1,
+          code: "" // Clear the editor
+        }));
+      }, 1000);
+      return;
+    }
+
     // En mode Mistral
     if (
       gameState.mistralMode ||
       (gameState.tutorialStep >= 6 && mistralStep >= 0)
     ) {
-      if (mistralMissions[mistralStep]?.test(code)) {
+      if (mistralMissions[mistralStep]?.test(cleanedCode)) {
         // Succès pour la mission Mistral
         setFeedbackType("success");
         setFeedback("Code correct");
@@ -126,9 +162,8 @@ function Editor({ gameState, setGameState }) {
           source: "mistral"
         });
 
-        setTimeout(() => {
-          advanceMistralStep();
-        }, 1000);
+        advanceMistralStep();
+        setCode(""); // Clear the editor here
       } else {
         // Erreur pour la mission Mistral
         setFeedbackType("error");
@@ -145,19 +180,35 @@ function Editor({ gameState, setGameState }) {
     }
 
     // Mode normal (tutoriel GPT-Overlord)
-    if (matchByStep[currentStep]?.test(code)) {
+    if (matchByStep[currentStep]?.test(cleanedCode)) {
       // Succès pour l'étape actuelle
       setFeedbackType("success");
       setFeedback("Code correct");
 
       // Cas spécial: étape 6 avec Mistral
-      if (currentStep === 6) {
-        // La gestion de Mistral se fait dans Terminal.jsx
+      if (gameState.tutorialStep >= 6 && currentStep >= 6) {
+        // Modify this line
+        // Déclencher l'apparition de Mistral
         const message = "Commande secrète détectée...";
         logToTerminal({
           text: message,
           source: "gpt"
         });
+
+        // Avancer le tutoriel à l'étape 7 pour activer Mistral
+        setTimeout(() => {
+          advanceTutorialStep();
+          // Mettre à jour l'état du jeu pour activer Mistral
+          setGameState((prev) => ({
+            // Use setGameState instead of setContextGameState
+            ...prev,
+            tutorialStep: 7, // S'assurer que l'étape est bien 7
+            mistralMode: true, // Activer explicitement le mode Mistral
+            mistralStep: 1,
+            code: "" // Clear the editor
+          }));
+          setCode(""); // Clear the editor here
+        }, 1000);
       } else {
         // Messages de succès normaux et avancement à l'étape suivante
         const successMessage = `GPT-Overlord: Code validé ! Tu t'améliores !`;
@@ -166,10 +217,8 @@ function Editor({ gameState, setGameState }) {
           source: "gpt"
         });
 
-        setTimeout(() => {
-          advanceTutorialStep();
-          setFeedback(""); // Effacer le feedback après avancement
-        }, 1000);
+        advanceTutorialStep();
+        setFeedback(""); // Effacer le feedback après avancement
       }
     } else {
       // Erreur - afficher message simple
@@ -182,6 +231,12 @@ function Editor({ gameState, setGameState }) {
         text: errorMessage,
         source: "gpt"
       });
+
+      // Reset cursor position
+      if (editorRef.current) {
+        editorRef.current.selectionStart = 0;
+        editorRef.current.selectionEnd = 0;
+      }
     }
   };
 
@@ -231,7 +286,7 @@ function Editor({ gameState, setGameState }) {
       <textarea
         ref={editorRef}
         className="w-full h-64 bg-white text-black p-4 font-mono text-sm resize-none outline-none border-b border-gray-700"
-        value={code}
+        placeholder="// Écrivez votre code ici\n\n" // Use placeholder instead of value
         onChange={handleCodeChange}
         onKeyDown={handleKeyDown}
         spellCheck="false"

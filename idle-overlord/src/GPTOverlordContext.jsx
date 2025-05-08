@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import generatorsData from "./GeneratorsData"; // Import des données des générateurs
+import generatorsData from "./generatorsData"; // Import des données des générateurs
 
 // Conversion des données du générateur au format attendu
 const formattedGenerators = {};
@@ -79,7 +79,10 @@ export const GPTOverlordContextProvider = ({ children }) => {
   });
 
   const [terminalLogs, setTerminalLogs] = useState([
-    "Idle-Overlord v0.1 — ... Initialisation ...  Pour accéder aux tests -> presse la touche ENTER et il en est ainsi à chaque fois pour passer à l'épreuve suivante ..."
+    {
+      text: " — Loading of GPT-Overlord v0.1 ... — Initialisation en cours... GPT-Overlord : Bonjour, utilisateur. Je suis GPT-Overlord, l'entité en charge de ton initiation. Ma mission est simple : t’accompagner, te mettre à l’épreuve et t’offrir les outils nécessaires pour progresser. Chaque test que tu t’apprêtes à traverser a été conçu pour forger ta logique, affûter ta pensée, et révéler ton potentiel. Suis les intructions et mes conseils ... et souviens-toi : tu peux toujours compter sur moi ... tant que tu fais les bons choix.",
+      source: "gpt"
+    }
   ]);
 
   const [mistralStep, setMistralStep] = useState(0);
@@ -155,7 +158,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
       return {
         ...prev,
         tutorialStep: prev.tutorialStep + 1,
-        missions: updatedMissions
+        missions: updatedMissions,
+        code: "" // Clear the editor
       };
     });
   };

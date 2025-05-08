@@ -14,7 +14,7 @@ export default function Terminal() {
   } = useGPTOverlord();
 
   const [messagesGPT, setMessagesGPT] = useState([
-    "Idle-Overlord v0.1 — ... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
+    "GPT-Overlord v0.1 — ... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
   ]);
   const [messagesMistral, setMessagesMistral] = useState([]);
   const [showMistral, setShowMistral] = useState(false);
@@ -30,7 +30,7 @@ export default function Terminal() {
       .map((log) => log.text);
 
     setMessagesGPT([
-      "Idle-Overlord v0.1 — ... Initialisation ...",
+      "GPT-Overlord v0.1 — ... Initialisation ...",
       ...gptMessages
     ]);
     setMessagesMistral(mistralMsgs);

@@ -45,7 +45,7 @@ function InspirationButton() {
               : "bg-gray-600 cursor-not-allowed"
           }`}
         >
-          💡 Générateur d'Inspiration 💡
+          💡 Générateur Manuel d'Inspiration 💡
         </button>
       </div>
     </div>
