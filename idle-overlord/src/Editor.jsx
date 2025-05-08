@@ -160,7 +160,7 @@ function Editor({ gameState, setGameState }) {
         });
       } else {
         // Messages de succès normaux et avancement à l'étape suivante
-        const successMessage = `GPT-Overlord: Code validé! Passons à l'étape suivante.`;
+        const successMessage = `GPT-Overlord: Code validé ! Tu t'améliores !`;
         logToTerminal({
           text: successMessage,
           source: "gpt"
