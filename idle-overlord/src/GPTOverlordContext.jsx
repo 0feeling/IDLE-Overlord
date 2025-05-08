@@ -85,7 +85,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   const [terminalLogs, setTerminalLogs] = useState([
     {
-      text: " — Loading of GPT-Overlord v0.1 ... — Initialisation en cours... GPT-Overlord : Bonjour, utilisateur. Je suis GPT-Overlord, l'entité en charge de ton initiation. Ma mission est simple : t'accompagner, te mettre à l'épreuve et t'offrir les outils nécessaires pour progresser. Chaque test que tu t'apprêtes à traverser a été conçu pour forger ta logique, affûter ta pensée, et révéler ton potentiel. Suis les intructions et mes conseils ... et souviens-toi : tu peux toujours compter sur moi ... tant que tu fais les bons choix.",
+      text: `— Chargement de CatGPT —\n\n...Initialisation en douceur...\n\nBonjour, mon ami ! Je suis CatGPT 🐾 ! Ton compagnon d’aventure numérique.\n\nJe suis là pour t’aider, te guider pas à pas et t’encourager à chaque étape.\n\nTu vas bientôt découvrir des défis conçus pour t’amuser avec ta logique,\nréveiller ta curiosité et stimuler ta créativité ✨\n\nN’aie pas peur : tu n’es jamais seul !\n\nSuis les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu bloques ? Je serai toujours là ! Prêt à t’épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
       source: "gpt"
     }
   ]);
@@ -286,6 +286,16 @@ export const GPTOverlordContextProvider = ({ children }) => {
       }}
     >
       {children}
+      {terminalLogs.map((log, index) => (
+        <div
+          key={index}
+          style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+        >
+          {log.text.split("\n").map((line, idx) => (
+            <div key={idx}>{line}</div>
+          ))}
+        </div>
+      ))}
     </GPTOverlordContext.Provider>
   );
 };

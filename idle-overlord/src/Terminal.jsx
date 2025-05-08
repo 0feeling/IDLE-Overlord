@@ -14,7 +14,7 @@ export default function Terminal() {
   } = useGPTOverlord();
 
   const [messagesGPT, setMessagesGPT] = useState([
-    "GPT-Overlord v0.1 — ... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
+    "... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
   ]);
   const [messagesMistral, setMessagesMistral] = useState([]);
   const [showMistral, setShowMistral] = useState(false);
@@ -29,10 +29,7 @@ export default function Terminal() {
       .filter((log) => log.source === "mistral")
       .map((log) => log.text);
 
-    setMessagesGPT([
-      "GPT-Overlord v0.1 — ... Initialisation ...",
-      ...gptMessages
-    ]);
+    setMessagesGPT(["CatGPT — ... Initialisation ...", ...gptMessages]);
     setMessagesMistral(mistralMsgs);
   }, [terminalLogs]);
 
