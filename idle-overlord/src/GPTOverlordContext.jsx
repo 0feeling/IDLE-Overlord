@@ -286,15 +286,19 @@ export const GPTOverlordContextProvider = ({ children }) => {
       }}
     >
       {children}
+
       {terminalLogs.map((log, index) => (
-        <div
+        <pre
           key={index}
-          style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+          style={{
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word",
+            fontFamily: "inherit", // Pour garder la police actuelle
+            margin: 0 // Éliminer les marges par défaut de <pre>
+          }}
         >
-          {log.text.split("\n").map((line, idx) => (
-            <div key={idx}>{line}</div>
-          ))}
-        </div>
+          {log.text}
+        </pre>
       ))}
     </GPTOverlordContext.Provider>
   );
