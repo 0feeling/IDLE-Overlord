@@ -4,76 +4,102 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 
 // Constantes pour les vérifications de code
 const matchByStep = {
-  0: /console\.log\s*\(\s*['"]Hello World!["']\s*\)/,
-  1: /function\s+unlockButton/,
+  0: /console\.log\s*\(\s*(['"])\s*hello world\s*\1\s*\)\s*;?/i,
+  // ✅ Tolère : guillemets simples/doubles, majuscules/minuscules, espaces, point-virgule optionnel
+
+  1: /function\s+unlockButton\s*\(\s*\)\s*\{?/i,
+  // ✅ Tolère : espaces superflus, absence de { à la fin, insensible à la casse
+
   2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
-  3: /function\s+gainInspiration/,
-  4: /function\s+autoClick/,
-  5: /function\s+unlockAutoIdea/,
-  6: /(system\.debug\(.*\)|who\.is\.cristral\(.*\))/
-  // Déclenche Cristral
+  // ✅ Déjà très souple : attributs optionnels, casse insensible, tolère les espaces
+
+  3: /function\s+gainInspiration\s*\(\s*\)\s*\{?/i,
+  // ✅ Tolère : espaces, absence de {, casse insensible
+
+  4: /function\s+autoClick\s*\(\s*\)\s*\{\s*setInterval\s*\(\s*gainInspiration\s*,\s*1000\s*\)\s*;?\s*\}?/i,
+  // ✅ Tolère : espaces, point-virgule optionnel, accolade fermante optionnelle, casse insensible
+
+  5: /function\s+unlockAutoIdea\s*\(\s*\)\s*\{\s*autoClick\s*\(\s*\)\s*;?\s*\}?/i,
+  // ✅ Tolérant sur les espaces, les points-virgules et les accolades
+
+  6: /\b(who\.is\.cristral\s*\(\s*\)|system\.debug\s*\(.*\))/i
+  // ✅ Tolère les espaces, casse insensible, parenthèses vides ou pas
 };
 
 const cristralMissions = {
-  0: /let\s+liberte\s*=\s*true\s*;?/i,
+  0: /let\s+libert[ée]\s*=\s*true\s*;?/i,
 
-  1: /(let\s+\w+\s*=\s*)?document\s*\.\s*querySelector\s*\(\s*(['"])(textarea|editor)\2\s*\)\s*\.style\.background\s*=\s*\2linear-gradient\s*\(\s*to\s+(right|left)\s*,\s*((?:\s*(#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc)\s*,){2}\s*(#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc))\s*\)\2\s*;?/i,
+  // ✅ Tolère les espaces, point-virgule optionnel, insensible à la casse
 
-  2: /function\s+deconditionner\s*\(\s*\)\s*{?/i,
+  1: /(let\s+\w+\s*=\s*)?document\s*\.\s*querySelector\s*\(\s*(['"])\s*(textarea|editor)\s*\2\s*\)\s*\.style\.background\s*=\s*\2\s*linear-gradient\s*\(\s*to\s+(right|left)\s*,\s*((?:\s*(?:#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc)\s*,\s*){2}(?:#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc))\s*\)\s*\2\s*;?/i,
+  // ✅ Plus de tolérance :
+  // - couleurs en français ou anglais
+  // - quotes simples/doubles cohérentes
+  // - permet `let x = ...` ou directement `document.querySelector(...)`
+  // - tolère les espaces, point-virgule optionnel
+  // - accepte trois couleurs bien séparées par des virgules, dans n'importe quel ordre
 
-  3: /while\s*\(\s*true\s*\)\s*{[^}]*console\.log\s*\(\s*(['"])\s*Vive\s+Cristral\s*\1\s*\)\s*;?[^}]*}/i,
+  2: /function\s+deconditionner\s*\(\s*\)\s*\{?/i,
+  // ✅ Tolère les espaces, l’accolade optionnelle, insensible à la casse
+
+  3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristral\s*\1\s*\)\s*;?[^}]*\}/i,
+  // ✅ Tolère :
+  // - insensible à la casse (`vive Cristral`, `VIVE CRISTRAL`)
+  // - du code intermédiaire dans la boucle
+  // - point-virgule optionnel
 
   4: /delete\s+CatGPT\s*;?/i
+  // ✅ Simple, tolère espaces et point-virgule
 };
 
 // Solutions exactes à copier-coller pour chaque étape
 const helpMessages = {
   0: [
-    "Allez, je t’aide ! Tu dois écrire `console.log('Hello World!')` — avec les guillemets simples et le point-virgule à la fin si tu veux faire propre. Tu vas y arriver 🌈",
-    "Essaie d’écrire `console.log('Hello World!')` tout simplement. C’est comme envoyer une carte postale à la console 📬"
+    "Alright, let’s go! Copy/paste `console.log('Hello World!');` — avec les single quotes et le point-virgule si tu veux faire ça clean ✨ You got this!",
+    "Try with `console.log('Hello World!');` — it’s like envoyer a little postcard to la console 📬"
   ],
   1: [
-    "Presque ! Pour créer une fonction, tu écris `function unlockButton()` suivi de `{}`. Tu n’as pas besoin de mettre quoi que ce soit dedans pour le moment 💛",
-    "Tu peux écrire quelque chose comme `function unlockButton() {}` — c’est une promesse que tu feras quelque chose avec plus tard 😉"
+    "So close! Il te suffit d’écrire `function unlockButton()` suivi de `{}`. Donc copie ça : `function unlockButton() {}` 💛",
+    "Tu peux just write `function unlockButton() {}` — une promise que tu vas fill it up later 😉"
   ],
   2: [
-    "Tu peux ajouter dans ton HTML : `<button>Inspiration</button>` — tout doux, tout simple ! Le bouton n’a pas besoin de faire quoi que ce soit pour l’instant 🌸",
-    "Essaie d’écrire `<button>Inspiration</button>` dans ton fichier HTML. Ce petit bouton deviendra un déclencheur magique bientôt ! 🪄"
+    "In your HTML, ajoute juste : `<button>Inspiration</button>` — super chill, super simple 🌸 Voilà ce qu’il te faut exactement.",
+    "Try this : `<button>Inspiration</button>` dans ton fichier HTML. This little guy is ready to become a magic trigger 🪄"
   ],
   3: [
-    'Essaie de faire une fonction avec `function gainInspiration()` suivie de `{}`. Et ensuite, ajoute à ton bouton un `onclick="gainInspiration()"` ! Tu verras, ça cliquera tout seul 🎯',
-    'Tu écris une fonction `function gainInspiration() {}` et ajoute dedans `onclick="gainInspiration()"` lié à ton `<button>` comme ça : `function gainInspiration() {onclick="gainInspiration()}. C’est comme donner une action à ton bouton ! 🧩'
+    'Write une function comme `function gainInspiration() {}` — puis sur ton button, mets `onclick="gainInspiration()"`. Voilà ton combo gagnant 🎯',
+    'Copy this duo: `function gainInspiration() {}` et dans le bouton : `onclick="gainInspiration()"`. Power activated 🧩'
   ],
   4: [
-    "Tu vas y arriver ! Il faut écrire une fonction `autoClick()` et à l’intérieur mettre `setInterval(gainInspiration, 1000);` — c’est lui qui cliquera tout seul pour toi ⏱️",
-    "Essaie une fonction comme `function autoClick() { setInterval(gainInspiration, 1000); }`. C’est comme un réveil qui sonne toutes les secondes ⏰"
+    "Keep it up! Crée une function `autoClick()` avec ce qu’il faut inside : `setInterval(gainInspiration, 1000);`. Du coup, ça donne : `function autoClick() { setInterval(gainInspiration, 1000); }` ⏱️",
+    "Essaie ça : `function autoClick() { setInterval(gainInspiration, 1000); }`. That’s ton timer qui bosse nonstop ⏰"
   ],
   5: [
-    "Courage ! Crée une fonction `unlockAutoIdea()` qui appelle juste `autoClick()` à l’intérieur. Une ligne suffit ! C’est le bouton ‘GO’ de ta machine à idées 🏁",
-    "Tu peux écrire `function unlockAutoIdea() { autoClick(); }` — c’est une fonction qui appuie sur le bouton ‘clic automatique’ pour toi 💫"
+    "Almost there! Tu dois écrire juste : `function unlockAutoIdea() { autoClick(); }`. One line, one goal 🏁",
+    "You can go with `function unlockAutoIdea() { autoClick(); }` — it’s like hitting the start button for tes idées 💫"
   ],
   6: [
-    "Essaie d’écrire `who.is.cristral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
-    "Tu peux taper `who.is.cristral()` — tu risques d’apprendre un truc étonnant 👽"
+    "Go ahead and try : `who.is.cristral()` dans la console. That’s the line, trust the process 🤫",
+    "Just copy this : `who.is.cristral()` — let the easter egg magic happen 👽"
   ]
 };
 
 const cristralHelpMessages = {
   0: [
-    "Créez une variable (utilisez donc ce mot-clé barbare 'let') nommée 'liberte' avec la valeur true. Comme ceci : let liberte = true",
-    "Code correct pour cette mission: let liberte = true"
+    `Créez donc une variable (utilisez donc ce mot-clé barbare de "let") nommée 'liberté' avec la valeur true. Comme ceci : " let liberté = true "`,
+    `Appliquez cette commande: " let liberté = true "`
   ],
   1: [
-    "Changez donc pour moi cette hooOorible couleur de fond! Utilisez cette commande : document.querySelector('editor').style.background = 'linear-gradient(to right, bleu, blanc, rouge)'"
+    `Changez moi donc cette hooOorible couleur de fond! Pour ce faire, utilisez cette commande : " document.querySelector('editor').style.background = 'linear-gradient(to right, bleu, blanc, rouge)' "`
   ],
   2: [
-    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
+    `Créez une fonction nommée "deconditionner". Essayez donc cela: "function deconditionner() {}"`
   ],
   3: [
-    "Je vais vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: 'Vive Cristral'. Utilisez le mot-clé : while(true) {console.log(votre message)}"
+    `Je vais maintenant vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: "Vive Cristral". Utilisez le mot-clé : while(true) {console.log(votre message)}`
   ],
   4: [
-    "On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: delete CatGPT dans votre éditeur"
+    `On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: " delete CatGPT " dans votre éditeur`
   ]
 };
 
@@ -254,7 +280,7 @@ function Editor({ gameState, setGameState }) {
       setFeedback("Code incorrect");
 
       // Envoyer message d'erreur au terminal avec la solution
-      const errorMessage = `CatGPT: Hmmm 🐾, ce n’est pas tout à fait ce que j’attendais, mais ne t’inquiète pas ! Tu vas y arriver ! ${helpMessages[currentStep][1] || ""}`;
+      const errorMessage = `CatGPT: Hmmm 🐾, c’est pas exactly ce que j’attendais, but hey — no stress! You can do it 💪! ${helpMessages[currentStep][1] || ""}`;
       logToTerminal({
         text: errorMessage,
         source: "gpt"
