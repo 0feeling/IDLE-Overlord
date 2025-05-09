@@ -59,7 +59,8 @@ const cristralMissions = [
     validated: false
   },
   {
-    instruction: "Apprendre à changer la background-color / couleur de fond",
+    instruction:
+      "Apprendre à changer la background-color / couleur de fond d'un élément du DOM",
     validated: false
   },
   { instruction: "Créer une fonction 'deconditionner()'", validated: false },

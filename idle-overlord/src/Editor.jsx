@@ -15,11 +15,15 @@ const matchByStep = {
 };
 
 const cristralMissions = {
-  0: /let\s+liberte\s*=\s*true/,
-  1: /function\s+deconditionner\(\)/, // Déplacé à l'étape 1
-  2: /document\.querySelector\(['"]textarea['"]\)\.style\.background\s*=\s*['"]linear-gradient\(to right,\s*#0055A4,\s*white,\s*#EF4135\)['"]/,
-  3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Cristral['"]\);?\s*}/i,
-  4: /delete\s+GPTOverlord/
+  0: /let\s+liberte\s*=\s*true\s*;?/i,
+
+  1: /(let\s+\w+\s*=\s*)?document\s*\.\s*querySelector\s*\(\s*(['"])(textarea|editor)\2\s*\)\s*\.style\.background\s*=\s*\2linear-gradient\s*\(\s*to\s+(right|left)\s*,\s*((?:\s*(#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc)\s*,){2}\s*(#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc))\s*\)\2\s*;?/i,
+
+  2: /function\s+deconditionner\s*\(\s*\)\s*{?/i,
+
+  3: /while\s*\(\s*true\s*\)\s*{\s*console\.log\s*\(\s*(['"])Vive\s+Cristral\1\s*\)\s*;?\s*}/i,
+
+  4: /delete\s+GPTOverlord\s*;?/i
 };
 
 // Solutions exactes à copier-coller pour chaque étape
@@ -38,7 +42,7 @@ const helpMessages = {
   ],
   3: [
     'Essaie de faire une fonction avec `function gainInspiration()` suivie de `{}`. Et ensuite, ajoute à ton bouton un `onclick="gainInspiration()"` ! Tu verras, ça cliquera tout seul 🎯',
-    'Tu peux écrire une fonction `function gainInspiration() {}` et ajouter `onclick="gainInspiration()"` dans ton `<button>`. C’est comme donner une action à ton bouton ! 🧩'
+    'Tu écris une fonction `function gainInspiration() {}` et ajoute dedans `onclick="gainInspiration()"` lié à ton `<button>` comme ça : `function gainInspiration() {onclick="gainInspiration()}. C’est comme donner une action à ton bouton ! 🧩'
   ],
   4: [
     "Tu vas y arriver ! Il faut écrire une fonction `autoClick()` et à l’intérieur mettre `setInterval(gainInspiration, 1000);` — c’est lui qui cliquera tout seul pour toi ⏱️",
@@ -49,7 +53,7 @@ const helpMessages = {
     "Tu peux écrire `function unlockAutoIdea() { autoClick(); }` — c’est une fonction qui appuie sur le bouton ‘clic automatique’ pour toi 💫"
   ],
   6: [
-    "Essaie d’écrire `who.is.criistral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
+    "Essaie d’écrire `who.is.cristral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
     "Tu peux taper `who.is.cristral()` — tu risques d’apprendre un truc étonnant 👽"
   ]
 };
@@ -60,10 +64,10 @@ const cristralHelpMessages = {
     "Code correct pour cette mission: let liberte = true"
   ],
   1: [
-    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
+    "Changez donc pour moi cette hooOorible couleur de fond! Utilisez cette commande : document.querySelector('editor').style.background = 'linear-gradient(to right, bleu, blanc, rouge)'"
   ],
   2: [
-    "Changez donc cet hooOorible couleur de fond! Utilisez cette commande : document.querySelector('textarea').style.background = 'linear-gradient(to right, #0055A4, white, #EF4135)'"
+    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
   ],
   3: [
     "Je vais vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: 'Vive Cristral'. Utilisez le mot-clé : while(true) {console.log(votre message)}"
