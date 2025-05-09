@@ -97,6 +97,20 @@ export const GPTOverlordContextProvider = ({ children }) => {
   const advanceMistralStep = () => {
     setMistralStep((prev) => {
       const newStep = prev + 1;
+      // Cas spécial: si la mission 1 (index 0) vient d'être validée,
+      // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
+      if (prev === 0) {
+        setTimeout(() => {
+          // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
+          const editorElement = document.querySelector("textarea");
+          if (editorElement) {
+            editorElement.style.background =
+              "linear-gradient(to right, #0055A4, white, #EF4135)";
+            // Stocker l'information que le style a été appliqué
+            localStorage.setItem("mistral-flag-applied", "true");
+          }
+        }, 300); // Petit délai pour s'assurer que l'interface a été mise à jour
+      }
       // Si on atteint la dernière étape, cacher complètement GPT-Overlord
       if (newStep >= 5) {
         setHideOverlord(true);

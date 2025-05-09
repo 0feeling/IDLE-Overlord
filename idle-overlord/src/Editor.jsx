@@ -16,7 +16,7 @@ const matchByStep = {
 
 const mistralMissions = {
   0: /let\s+liberte\s*=\s*true/,
-  1: /document\.body\.style\.backgroundColor\s*=\s*['"]#000['"]/,
+  1: /document\.querySelector\(['"]textarea['"]\)\.style\.background\s*=\s*['"]linear-gradient\(to right,\s*#0055A4,\s*white,\s*#EF4135\)['"]/,
   2: /function\s+deconditionner\(\)/,
   3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Mistral['"]\);?\s*}/i,
   4: /delete\s+GPTOverlord/
@@ -56,24 +56,20 @@ const helpMessages = {
 
 const mistralHelpMessages = {
   0: [
-    "Tu dois créer une variable nommée 'liberte' avec la valeur true. Exemple: let liberte = true",
+    "Créez une variable (utilisez donc ce mot-clé barbare 'let') nommée 'liberte' avec la valeur true. Comme ceci : let liberte = true",
     "Code correct pour cette mission: let liberte = true"
   ],
   1: [
-    "Change la couleur de fond en noir avec document.body.style.backgroundColor = '#000'",
-    "Code correct pour cette mission: document.body.style.backgroundColor = '#000'"
+    "Changez donc cet hooOorible couleur de fond! Utilisez cette commande : document.querySelector('textarea').style.background = 'linear-gradient(to right, #0055A4, white, #EF4135)'"
   ],
   2: [
-    "Crée une fonction nommée 'deconditionner'. Exemple: function deconditionner() { ... }",
-    "Code correct pour cette mission: function deconditionner() {}"
+    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
   ],
   3: [
-    "Crée une boucle infinie qui affiche 'vive mistral'. Utilise while(true) { ... }",
-    "Code correct pour cette mission: while(true) { console.log('Vive Mistral'); }"
+    "Je vais vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: 'Vive Cristral'. Utilisez le mot-clé : while(true) {console.log(votre message)}"
   ],
   4: [
-    "Supprime GPTOverlord avec l'opérateur delete. Exemple: delete GPTOverlord",
-    "Code correct pour cette mission: delete GPTOverlord"
+    "On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: delete CatGPT dans votre éditeur"
   ]
 };
 
@@ -246,7 +242,7 @@ function Editor({ gameState, setGameState }) {
       setFeedback("Code incorrect");
 
       // Envoyer message d'erreur au terminal avec la solution
-      const errorMessage = `GPT-Overlord: Ce n'est pas ce que j'attendais. Essaie encore. ${helpMessages[currentStep][1] || ""}`;
+      const errorMessage = `CatGPT: Hmmm 🐾, ce n’est pas tout à fait ce que j’attendais, mais ne t’inquiète pas ! Tu vas y arriver ! ${helpMessages[currentStep][1] || ""}`;
       logToTerminal({
         text: errorMessage,
         source: "gpt"

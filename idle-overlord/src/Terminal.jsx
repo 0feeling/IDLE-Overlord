@@ -66,11 +66,11 @@ export default function Terminal() {
   useEffect(() => {
     if (mistralStep > 0 && mistralStep < 5) {
       const missionDescriptions = [
-        "Créez une variable 'liberte' avec la valeur true",
-        "Changez la couleur de fond en noir",
-        "Créez une fonction 'deconditionner()'",
-        "Créez une boucle qui affiche 'vive mistral'",
-        "Supprimez GPTOverlord avec delete"
+        "Apprendre à créer une variable",
+        "Apprendre à changer la background-color",
+        "Créez une fonction",
+        "Apprendre à créer une boucle infinie",
+        "Faire le Bon choix"
       ];
 
       setMessagesMistral((prev) => [
