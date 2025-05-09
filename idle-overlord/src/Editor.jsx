@@ -78,21 +78,29 @@ function Editor({ gameState, setGameState }) {
     logToTerminal,
     advanceTutorialStep,
     mistralStep,
-    advanceMistralStep,
-    setGameState: setContextGameState
+    advanceMistralStep
   } = useGPTOverlord();
 
   const [code, setCode] = useState(gameState.code || "");
   const [feedback, setFeedback] = useState("");
-  const [feedbackType, setFeedbackType] = useState("info"); // "info", "error", "success"
+  const [feedbackType, setFeedbackType] = useState("info");
   const editorRef = useRef(null);
 
-  // Synchroniser le code avec le gameState lorsqu'il change
   useEffect(() => {
     if (gameState.code !== code) {
       setCode(gameState.code);
     }
-  }, [gameState.code]);
+
+    if (
+      (gameState.mistralMode && gameState.mistralMissions?.[0]?.validated) ||
+      localStorage.getItem("mistral-flag-applied") === "true"
+    ) {
+      if (editorRef.current) {
+        editorRef.current.style.background =
+          "linear-gradient(to right, #0055A4, white, #EF4135)";
+      }
+    }
+  }, [gameState, code]); // Dépendances pour s'assurer que ça s'exécute au bon moment
 
   const handleCodeChange = (e) => {
     const newCode = e.target.value;
@@ -185,7 +193,7 @@ function Editor({ gameState, setGameState }) {
         setFeedback("Code incorrect");
 
         // Envoyer message d'erreur au terminal avec la solution
-        const errorMessage = `Mistral.AI : Ce n'est pas encore ça. Reprends-toi. ${mistralHelpMessages[mistralStep][1] || ""}`;
+        const errorMessage = `Cristral.AI : Ce n'est pas pas ça ! ${mistralHelpMessages[mistralStep][1] || ""}`;
         logToTerminal({
           text: errorMessage,
           source: "mistral"
@@ -219,7 +227,7 @@ function Editor({ gameState, setGameState }) {
             ...prev,
             tutorialStep: 7, // S'assurer que l'étape est bien 7
             mistralMode: true, // Activer explicitement le mode Mistral
-            mistralStep: 1,
+            mistralStep: 0,
             code: "" // Clear the editor
           }));
           clearEditor(); // Utiliser notre nouvelle fonction ici

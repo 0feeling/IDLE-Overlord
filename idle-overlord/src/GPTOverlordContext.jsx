@@ -55,16 +55,19 @@ const tutorialMissions = [
 // Missions de Mistral
 const mistralMissions = [
   {
-    instruction: "Créer une variable 'liberte' avec valeur true",
+    instruction: "Apprendre à créer une variable",
     validated: false
   },
-  { instruction: "Changer la couleur de fond en noir", validated: false },
+  {
+    instruction: "Apprendre à changer la background-color / couleur de fond",
+    validated: false
+  },
   { instruction: "Créer une fonction 'deconditionner()'", validated: false },
   {
-    instruction: "Créer une boucle infinie qui affiche 'vive mistral'",
+    instruction: "Apprendre a créer une boucle'",
     validated: false
   },
-  { instruction: "Supprimer GPTOverlord avec delete", validated: false }
+  { instruction: "Faire un choix", validated: false }
 ];
 
 const GPTOverlordContext = createContext();
