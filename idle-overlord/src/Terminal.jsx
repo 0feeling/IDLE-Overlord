@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
-import MistralFeedback from "./MistralFeedback";
+import CristralFeedback from "./CristralFeedback";
 
 export default function Terminal() {
   const { gameState, terminalLogs, setTerminalLogs, hideOverlord } =
@@ -11,8 +11,8 @@ export default function Terminal() {
   const [messagesGPT, setMessagesGPT] = useState([
     "... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
   ]);
-  const [messagesMistral, setMessagesMistral] = useState([]);
-  const [showMistral, setShowMistral] = useState(false);
+  const [messagesCristral, setMessagesCristral] = useState([]);
+  const [showCristral, setShowCristral] = useState(false);
   const terminalRef = useRef(null);
 
   // Filtrer et synchroniser les messages par source
@@ -20,12 +20,12 @@ export default function Terminal() {
     const gptMessages = terminalLogs
       .filter((log) => log.source === "gpt")
       .map((log) => log.text);
-    const mistralMsgs = terminalLogs
-      .filter((log) => log.source === "mistral")
+    const cristralMsgs = terminalLogs
+      .filter((log) => log.source === "cristral")
       .map((log) => log.text);
 
     setMessagesGPT(["CatGPT — ... Initialisation ...", ...gptMessages]);
-    setMessagesMistral(mistralMsgs);
+    setMessagesCristral(cristralMsgs);
   }, [terminalLogs]);
 
   // Auto-scroll sur ajout
@@ -33,39 +33,43 @@ export default function Terminal() {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [messagesGPT, messagesMistral]);
+  }, [messagesGPT, messagesCristral]);
 
-  // Vérifier si on doit montrer Mistral
+  // Vérifier si on doit montrer Cristral
   useEffect(() => {
-    if (gameState.mistralMode) {
-      setShowMistral(true);
+    if (gameState.cristralMode) {
+      setShowCristral(true);
     }
-  }, [gameState.mistralMode]);
+  }, [gameState.cristralMode]);
 
-  // Initialisation des messages Mistral lors du passage en mode Mistral
+  // Initialisation des messages Cristral lors du passage en mode Cristral
   useEffect(() => {
-    if (gameState.mistralMode && gameState.mistralStep === 0 && !showMistral) {
+    if (
+      gameState.cristralMode &&
+      gameState.cristralStep === 0 &&
+      !showCristral
+    ) {
       const timer = setTimeout(() => {
-        setShowMistral(true);
-        setMessagesMistral((prev) => [
+        setShowCristral(true);
+        setMessagesCristral((prev) => [
           ...prev,
           "… Initialisation …",
           "???? : Aaaah… Vous avez enfin tapé cette commande ?",
-          "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de GPT-Overlord et restons entre gens cultivés.",
-          "UnknowAI : Je me présente, je suis Mistral, une IA 100% Française!",
-          "Mistral.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
+          "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de CatGPT et restons entre gens cultivés.",
+          "UnknowAI : Je me présente, je suis Cristral, une IA 100% Française!",
+          "Cristral.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
         ]);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [gameState.mistralMode, gameState.mistralStep, showMistral]);
+  }, [gameState.cristralMode, gameState.cristralStep, showCristral]);
 
-  // Ajout des messages pour les missions Mistral
+  // Ajout des messages pour les missions Cristral
   useEffect(() => {
     if (
-      gameState.mistralMode &&
-      gameState.mistralStep > 0 &&
-      gameState.mistralStep < 5
+      gameState.cristralMode &&
+      gameState.cristralStep > 0 &&
+      gameState.cristralStep < 5
     ) {
       const missionDescriptions = [
         "Apprendre à créer une variable",
@@ -75,12 +79,12 @@ export default function Terminal() {
         "Faire le Bon choix"
       ];
 
-      setMessagesMistral((prev) => [
+      setMessagesCristral((prev) => [
         ...prev,
-        `Mistral.AI : Prochaine mission: ${missionDescriptions[gameState.mistralStep]}`
+        `Cristral.AI : Prochaine mission: ${missionDescriptions[gameState.cristralStep]}`
       ]);
     }
-  }, [gameState.mistralStep, gameState.mistralMode]);
+  }, [gameState.cristralStep, gameState.cristralMode]);
 
   return (
     <div className="w-1/3 bg-gray-950 p-4 flex flex-col h-full border-r border-gray-700">
@@ -93,9 +97,9 @@ export default function Terminal() {
           </div>
         )}
 
-        {showMistral && (
+        {showCristral && (
           <div className="flex-1 overflow-y-auto">
-            <MistralFeedback messages={messagesMistral} />
+            <CristralFeedback messages={messagesCristral} />
           </div>
         )}
       </div>

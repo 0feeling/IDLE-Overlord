@@ -1,3 +1,5 @@
+// File: MissionPanel.jsx
+
 import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import { CheckCircle, Circle } from "lucide-react"; // Importation des icônes
@@ -6,20 +8,20 @@ function MissionPanel() {
   const { gameState } = useGPTOverlord();
 
   // Déterminer quelle liste de missions utiliser en fonction du mode
-  const missions = gameState.mistralMode
-    ? gameState.mistralMissions
+  const missions = gameState.cristralMode
+    ? gameState.cristralMissions
     : gameState.missions;
 
-  // Utiliser gameState.mistralStep pour le mode Mistral
-  const currentStep = gameState.mistralMode
-    ? gameState.mistralStep
+  // Utiliser gameState.cristralStep pour le mode Cristral
+  const currentStep = gameState.cristralMode
+    ? gameState.cristralStep
     : gameState.tutorialStep;
 
-  // Obtenir la mission actuelle
-  const currentMission = missions[currentStep] || {
-    instruction: "Toutes les missions terminées!",
-    validated: false
-  };
+  // Obtenir la mission actuelle - et vérifier si l'index est valide
+  const currentMission =
+    missions[currentStep] !== undefined
+      ? missions[currentStep]
+      : { instruction: "Toutes les missions terminées!", validated: false };
 
   return (
     <div className="bg-gray-800 border-t border-gray-700 max-h-64 overflow-y-auto flex flex-col">
@@ -27,7 +29,7 @@ function MissionPanel() {
       <div className="bg-gray-900 p-3 border-b border-gray-700 sticky top-0">
         <h2 className="text-blue-300 text-xs uppercase tracking-wide font-semibold mb-1 flex items-center">
           <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse"></span>
-          Mission actuelle
+          {gameState.cristralMode ? "Mission Cristral" : "Mission actuelle"}
         </h2>
         <div className="flex items-start gap-3 py-1">
           <div className="mt-0.5">
@@ -38,7 +40,9 @@ function MissionPanel() {
             )}
           </div>
           <p
-            className={`text-sm leading-snug ${currentMission.validated ? "text-green-400" : "text-white"}`}
+            className={`text-sm leading-snug ${
+              currentMission.validated ? "text-green-400" : "text-white"
+            }`}
           >
             {currentMission.instruction}
           </p>
@@ -68,7 +72,11 @@ function MissionPanel() {
                   )}
                 </div>
                 <p
-                  className={`text-xs leading-snug ${mission.validated ? "text-green-400 line-through" : "text-gray-300"}`}
+                  className={`text-xs leading-snug ${
+                    mission.validated
+                      ? "text-green-400 line-through"
+                      : "text-gray-300"
+                  }`}
                 >
                   {mission.instruction}
                 </p>

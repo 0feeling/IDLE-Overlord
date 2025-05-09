@@ -19,7 +19,7 @@ function UnlockAutoIdeaButton({ threshold = 50 }) {
 
       // Log dans le terminal
       if (typeof logToTerminal === "function") {
-        logToTerminal("GPT-Overlord: Passive generation module unlocked.");
+        logToTerminal("CatGPT: Passive generation module unlocked.");
       }
     }
   };

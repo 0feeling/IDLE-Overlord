@@ -14,7 +14,7 @@ const missionMessages = {
 
   5: "CatGPT : 🚀 On conclut ce palier ! Crée une dernière fonction appelée `unlockAutoIdea()` qui appelle `autoClick()` quand elle est lancée. C’est un peu comme activer une machine à produire des idées sans interruption ! 💭",
 
-  6: "CatGPT : 🕵️ Petit défi bonus ! Il existe une fonction cachée dans le système… Peut-être un truc comme `who.is.mistral()` ? Essaie de l'appeler depuis la console pour en savoir plus... 👀"
+  6: "CatGPT : 🕵️ Petit défi bonus ! Il existe une fonction cachée dans le système… Peut-être un truc comme `who.is.cristral()` ? Essaie de l'appeler depuis la console pour en savoir plus... 👀"
 };
 
 export default function MissionTerminal() {
@@ -25,7 +25,7 @@ export default function MissionTerminal() {
     <div className="bg-gray-800 p-2 text-green-300 font-mono text-sm">
       <p>
         {missionMessages[step] ||
-          "GPT-Overlord: Ta mission est accomplie. Pour l’instant…"}
+          "CatGPT: Ta mission est accomplie. Pour l’instant…"}
       </p>
     </div>
   );

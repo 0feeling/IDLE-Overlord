@@ -52,8 +52,8 @@ const tutorialMissions = [
   }
 ];
 
-// Missions de Mistral
-const mistralMissions = [
+// Missions de Cristral
+const cristralMissions = [
   {
     instruction: "Apprendre à créer une variable",
     validated: false
@@ -78,13 +78,13 @@ export const GPTOverlordContextProvider = ({ children }) => {
     inspiration: 0, //valeur de départ
     autoIdeaUnlocked: false,
     tutorialStep: 0,
-    mistralStep: 0, // Ajouté pour synchroniser avec l'état local
+    cristralStep: 0, // Ajouté pour synchroniser avec l'état local
     code: "", // Initialiser avec une chaîne vide
     generators: formattedGenerators,
     missions: tutorialMissions,
-    mistralMissions: mistralMissions,
+    cristralMissions: cristralMissions,
     inspirationPerSecond: 0, // Nouveau: taux total d'inspiration/seconde
-    mistralMode: false // Indique si on est en mode Mistral
+    cristralMode: false // Indique si on est en mode Cristral
   });
 
   const [terminalLogs, setTerminalLogs] = useState([
@@ -94,23 +94,23 @@ export const GPTOverlordContextProvider = ({ children }) => {
     }
   ]);
 
-  // Suppression de mistralStep local, utilisation de gameState.mistralStep à la place
+  // Suppression de cristralStep local, utilisation de gameState.cristralStep à la place
   const [hideOverlord, setHideOverlord] = useState(false);
 
-  // Avancer dans les étapes de Mistral
-  const advanceMistralStep = () => {
+  // Avancer dans les étapes de Cristral
+  const advanceCristralStep = () => {
     setGameState((prev) => {
-      const newStep = prev.mistralStep + 1;
+      const newStep = prev.cristralStep + 1;
 
-      // Mettre à jour la validation des missions de Mistral
-      const updatedMistralMissions = [...prev.mistralMissions];
-      if (updatedMistralMissions[prev.mistralStep]) {
-        updatedMistralMissions[prev.mistralStep].validated = true;
+      // Mettre à jour la validation des missions de Cristral
+      const updatedCristralMissions = [...prev.cristralMissions];
+      if (updatedCristralMissions[prev.cristralStep]) {
+        updatedCristralMissions[prev.cristralStep].validated = true;
       }
 
       // Cas spécial: si la mission 1 (index 0) vient d'être validée,
       // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
-      if (prev.mistralStep === 0) {
+      if (prev.cristralStep === 0) {
         setTimeout(() => {
           // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
           const editorElement = document.querySelector("textarea");
@@ -118,12 +118,12 @@ export const GPTOverlordContextProvider = ({ children }) => {
             editorElement.style.background =
               "linear-gradient(to right, #0055A4, white, #EF4135)";
             // Stocker l'information que le style a été appliqué
-            localStorage.setItem("mistral-flag-applied", "true");
+            localStorage.setItem("cristral-flag-applied", "true");
           }
         }, 300); // Petit délai pour s'assurer que l'interface a été mise à jour
       }
 
-      // Si on atteint la dernière étape, cacher complètement GPT-Overlord
+      // Si on atteint la dernière étape, cacher complètement GPT-Overlord / CatGPT
       const shouldHideOverlord = newStep >= 5;
       if (shouldHideOverlord) {
         setHideOverlord(true);
@@ -131,8 +131,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
       return {
         ...prev,
-        mistralStep: newStep,
-        mistralMissions: updatedMistralMissions,
+        cristralStep: newStep,
+        cristralMissions: updatedCristralMissions,
         inspirationPerSecond: shouldHideOverlord
           ? prev.inspirationPerSecond * 2
           : prev.inspirationPerSecond,
@@ -220,7 +220,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   // Production passive d'inspiration
   useEffect(() => {
-    if (!gameState.autoIdeaUnlocked && !gameState.mistralMode) return;
+    if (!gameState.autoIdeaUnlocked && !gameState.cristralMode) return;
 
     const interval = setInterval(() => {
       setGameState((prev) => ({
@@ -230,7 +230,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [gameState.autoIdeaUnlocked, gameState.mistralMode]);
+  }, [gameState.autoIdeaUnlocked, gameState.cristralMode]);
 
   // Sauvegarde et chargement du jeu
   useEffect(() => {
@@ -261,16 +261,19 @@ export const GPTOverlordContextProvider = ({ children }) => {
     if (savedGame) {
       try {
         const parsed = JSON.parse(savedGame);
-        if (parsed.mistralMode && parsed.mistralStep >= 5) {
+        if (parsed.cristralMode && parsed.cristralStep >= 5) {
           setHideOverlord(true);
         }
       } catch (err) {
-        console.error("Erreur lors de la vérification de l'état mistral:", err);
+        console.error(
+          "Erreur lors de la vérification de l'état cristral:",
+          err
+        );
       }
     }
 
     // Appliquer le style tricolore si la flag est présente
-    if (localStorage.getItem("mistral-flag-applied") === "true") {
+    if (localStorage.getItem("cristral-flag-applied") === "true") {
       const editorElement = document.querySelector("textarea");
       if (editorElement) {
         editorElement.style.background =
@@ -298,8 +301,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         advanceTutorialStep,
         unlockAutoIdea,
         logToTerminal,
-        mistralStep: gameState.mistralStep, // Utiliser la valeur du gameState directement
-        advanceMistralStep,
+        cristralStep: gameState.cristralStep, // Utiliser la valeur du gameState directement
+        advanceCristralStep,
         hideOverlord,
         buyGenerator
       }}

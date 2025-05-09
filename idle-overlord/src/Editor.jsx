@@ -10,15 +10,15 @@ const matchByStep = {
   3: /function\s+gainInspiration/,
   4: /function\s+autoClick/,
   5: /function\s+unlockAutoIdea/,
-  6: /(system\.debug\(.*\)|who\.is\.mistral\(.*\))/
-  // Déclenche Mistral
+  6: /(system\.debug\(.*\)|who\.is\.cristral\(.*\))/
+  // Déclenche Cristral
 };
 
-const mistralMissions = {
+const cristralMissions = {
   0: /let\s+liberte\s*=\s*true/,
   1: /function\s+deconditionner\(\)/, // Déplacé à l'étape 1
   2: /document\.querySelector\(['"]textarea['"]\)\.style\.background\s*=\s*['"]linear-gradient\(to right,\s*#0055A4,\s*white,\s*#EF4135\)['"]/,
-  3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Mistral['"]\);?\s*}/i,
+  3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Cristral['"]\);?\s*}/i,
   4: /delete\s+GPTOverlord/
 };
 
@@ -49,12 +49,12 @@ const helpMessages = {
     "Tu peux écrire `function unlockAutoIdea() { autoClick(); }` — c’est une fonction qui appuie sur le bouton ‘clic automatique’ pour toi 💫"
   ],
   6: [
-    "Essaie d’écrire `who.is.mistral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
-    "Tu peux taper `who.is.mistral()` — tu risques d’apprendre un truc étonnant 👽"
+    "Essaie d’écrire `who.is.criistral()` dans la console... chuuuut, c’est un petit secret entre nous 🤫",
+    "Tu peux taper `who.is.cristral()` — tu risques d’apprendre un truc étonnant 👽"
   ]
 };
 
-const mistralHelpMessages = {
+const cristralHelpMessages = {
   0: [
     "Créez une variable (utilisez donc ce mot-clé barbare 'let') nommée 'liberte' avec la valeur true. Comme ceci : let liberte = true",
     "Code correct pour cette mission: let liberte = true"
@@ -77,8 +77,8 @@ function Editor({ gameState, setGameState }) {
   const {
     logToTerminal,
     advanceTutorialStep,
-    mistralStep,
-    advanceMistralStep
+    cristralStep,
+    advanceCristralStep
   } = useGPTOverlord();
 
   const [code, setCode] = useState(gameState.code || "");
@@ -92,8 +92,8 @@ function Editor({ gameState, setGameState }) {
     }
 
     if (
-      (gameState.mistralMode && gameState.mistralMissions?.[2]?.validated) ||
-      localStorage.getItem("mistral-flag-applied") === "true"
+      (gameState.cristralMode && gameState.cristralMissions?.[2]?.validated) ||
+      localStorage.getItem("cristral-flag-applied") === "true"
     ) {
       if (editorRef.current) {
         editorRef.current.style.background =
@@ -131,7 +131,7 @@ function Editor({ gameState, setGameState }) {
   };
 
   const handleCodeExecution = () => {
-    const currentStep = gameState.mistralMode ? -1 : gameState.tutorialStep;
+    const currentStep = gameState.cristralMode ? -1 : gameState.tutorialStep;
 
     // Clean the code
     // const cleanedCode = code.trim().replace(/[^a-zA-Z0-9\s(){}<>='/".;]/g, "");
@@ -142,25 +142,25 @@ function Editor({ gameState, setGameState }) {
     // Check for secret commands
     if (
       gameState.tutorialStep >= 6 &&
-      (code.includes("system.debug()") || code.includes("who.is.mistral()"))
+      (code.includes("system.debug()") || code.includes("who.is.cristral()"))
     ) {
-      // Déclencher l'apparition de Mistral
+      // Déclencher l'apparition de Cristral
       const message = "Commande secrète détectée...";
       logToTerminal({
         text: message,
-        source: "gpt"
+        source: "cristral"
       });
 
-      // Avancer le tutoriel à l'étape 7 pour activer Mistral
+      // Avancer le tutoriel à l'étape 7 pour activer Cristral
       setTimeout(() => {
         advanceTutorialStep();
-        // Mettre à jour l'état du jeu pour activer Mistral
+        // Mettre à jour l'état du jeu pour activer Cristral
         setGameState((prev) => ({
           // Use setGameState instead of setContextGameState
           ...prev,
           tutorialStep: 7, // S'assurer que l'étape est bien 7
-          mistralMode: true, // Activer explicitement le mode Mistral
-          mistralStep: 1,
+          cristralMode: true, // Activer explicitement le mode Cristral
+          cristralStep: 1,
           code: "" // Clear the editor
         }));
         clearEditor(); // Utiliser notre nouvelle fonction ici
@@ -168,80 +168,80 @@ function Editor({ gameState, setGameState }) {
       return;
     }
 
-    // En mode Mistral
+    // En mode Cristral
     if (
-      gameState.mistralMode ||
-      (gameState.tutorialStep >= 6 && mistralStep >= 0)
+      gameState.cristralMode ||
+      (gameState.tutorialStep >= 6 && cristralStep >= 0)
     ) {
-      if (mistralMissions[mistralStep]?.test(cleanedCode)) {
-        // Succès pour la mission Mistral
+      if (cristralMissions[cristralStep]?.test(cleanedCode)) {
+        // Succès pour la mission Cristral
         setFeedbackType("success");
         setFeedback("Code correct");
 
         // Envoyer un message au terminal avec la solution
-        const successMessage = `Mistral.AI : Excellente implémentation!`;
+        const successMessage = `Cristral.AI : Excellente implémentation!`;
         logToTerminal({
           text: successMessage,
-          source: "mistral"
+          source: "cristal"
         });
 
-        advanceMistralStep();
-        clearEditor(); // Utiliser notre nouvelle fonction ici
+        advanceCristralStep();
+        clearEditor();
       } else {
-        // Erreur pour la mission Mistral
+        // Erreur pour la mission Cristral
         setFeedbackType("error");
         setFeedback("Code incorrect");
 
         // Envoyer message d'erreur au terminal avec la solution
-        const errorMessage = `Cristral.AI : Ce n'est pas pas ça ! ${mistralHelpMessages[mistralStep][1] || ""}`;
+        const errorMessage = `Cristral.AI : Ce n'est pas pas ça ! ${cristralHelpMessages[cristralStep][1] || ""}`;
         logToTerminal({
           text: errorMessage,
-          source: "mistral"
+          source: "cristral"
         });
       }
       return;
     }
 
-    // Mode normal (tutoriel GPT-Overlord)
+    // Mode normal (tutoriel CatGPT)
     if (matchByStep[currentStep]?.test(cleanedCode)) {
       // Succès pour l'étape actuelle
       setFeedbackType("success");
       setFeedback("Code correct");
 
-      // Cas spécial: étape 6 avec Mistral
+      // Cas spécial: étape 6 avec Cristral
       if (gameState.tutorialStep >= 6 && currentStep >= 6) {
         // Modify this line
-        // Déclencher l'apparition de Mistral
+        // Déclencher l'apparition de Cristral
         const message = "Commande secrète détectée...";
         logToTerminal({
           text: message,
           source: "gpt"
         });
 
-        // Avancer le tutoriel à l'étape 7 pour activer Mistral
+        // Avancer le tutoriel à l'étape 7 pour activer Cristral
         setTimeout(() => {
           advanceTutorialStep();
-          // Mettre à jour l'état du jeu pour activer Mistral
+          // Mettre à jour l'état du jeu pour activer Cristral
           setGameState((prev) => ({
             // Use setGameState instead of setContextGameState
             ...prev,
             tutorialStep: 7, // S'assurer que l'étape est bien 7
-            mistralMode: true, // Activer explicitement le mode Mistral
-            mistralStep: 0,
+            cristralMode: true, // Activer explicitement le mode Cristral
+            cristralStep: 0,
             code: "" // Clear the editor
           }));
           clearEditor(); // Utiliser notre nouvelle fonction ici
         }, 1000);
       } else {
         // Messages de succès normaux et avancement à l'étape suivante
-        const successMessage = `GPT-Overlord: Code validé ! Tu t'améliores !`;
+        const successMessage = `CatGPT: Code validé ! Tu t'améliores !`;
         logToTerminal({
           text: successMessage,
           source: "gpt"
         });
 
         advanceTutorialStep();
-        clearEditor(); // Utiliser notre nouvelle fonction ici
+        clearEditor();
         setFeedback(""); // Effacer le feedback après avancement
       }
     } else {
