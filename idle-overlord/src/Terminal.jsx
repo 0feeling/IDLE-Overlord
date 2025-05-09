@@ -3,6 +3,7 @@ import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
 import CristralFeedback from "./CristralFeedback";
+import CristralMissionTerminal from "./CristralMissionTerminal";
 
 export default function Terminal() {
   const { gameState, terminalLogs, setTerminalLogs, hideOverlord } =
@@ -88,7 +89,8 @@ export default function Terminal() {
 
   return (
     <div className="w-1/3 bg-gray-950 p-4 flex flex-col h-full border-r border-gray-700">
-      <MissionTerminal />
+      {!hideOverlord && !gameState.cristralMode && <MissionTerminal />}
+      {gameState.cristralMode && <CristralMissionTerminal />}
 
       <div className="flex-1 overflow-hidden flex flex-col space-y-2">
         {!hideOverlord && (

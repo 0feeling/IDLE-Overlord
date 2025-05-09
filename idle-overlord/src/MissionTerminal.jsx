@@ -2,19 +2,19 @@ import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 
 const missionMessages = {
-  0: "CatGPT : 🌟 C’est parti ! Pour ton tout premier pas en JavaScript, essaye d’afficher un message dans la console. On utilise `console.log` pour ça, avec le texte entre guillemets simples. C’est une tradition que de commencer par `Hello World!` — comme dire bonjour à l’univers du code 😊",
+  0: "CatGPT : 🌟 Let’s gooo ! Pour ton tout premier step en JavaScript, tape un petit `console.log` pour print un message dans la console. C’est un classic de commencer avec `Hello World!` — comme un shout-out à l’univers du code 😊",
 
-  1: "CatGPT : 🛠️ Très bien ! Maintenant, écris une fonction toute simple. Pour ça, tu vas utiliser le mot-clé `function`, suivi du nom `unlockButton` avec des parenthèses, puis des accolades. Elle ne fera rien encore, mais c’est une base solide à poser 🧱",
+  1: "CatGPT : 🛠️ Nice job so far! Now, crée une petite function. Utilise le keyword `function`, appelle-la `unlockButton`, ajoute les parenthèses et des accolades. Pour l’instant elle fait nada, mais t’inquiète, c’est juste le set-up 🧱",
 
-  2: "CatGPT : 🖱️ On passe au HTML ! Crée un bouton avec la balise `<button>`. Tu peux lui donner un petit texte doux, comme 'Inspiration'. Ce bouton nous servira pour déclencher la suite des événements ✨",
+  2: "CatGPT : 🖱️ Next step: un peu de HTML power ! Crée un bouton avec la balise `<button>`. Donne-lui un petit label sympa, genre 'Inspiration'. Ce bouton va trigger la suite des events ✨",
 
-  3: "CatGPT : ✨ Super ! Crée maintenant une nouvelle fonction, que tu peux appeler `gainInspiration()` par exemple. Et surtout, relie cette fonction à ton bouton avec un `onclick`. Comme ça, quand on clique, la magie opère ! 🎩",
+  3: "CatGPT : ✨ Great ! Let’s add une nouvelle function — genre `gainInspiration()`. Et surtout, connecte-la à ton bouton avec `onclick`. Comme ça, quand tu cliques, boom: magic happens 🎩",
 
-  4: "CatGPT : ⚙️ Tu es prêt·e pour un peu d’automatisation ? Crée une fonction appelée `autoClick()`, et utilise `setInterval()` dedans pour que ta fonction `gainInspiration` se lance automatiquement à intervalles réguliers. Comme un petit moteur qui tourne tout seul 🔁",
+  4: "CatGPT : ⚙️ Ready pour un peu d’automatisation ? Create une function `autoClick()` avec `setInterval()` dedans. Comme ça, ta fonction `gainInspiration` va run toute seule again and again. C’est le auto-mode 🔁",
 
-  5: "CatGPT : 🚀 On conclut ce palier ! Crée une dernière fonction appelée `unlockAutoIdea()` qui appelle `autoClick()` quand elle est lancée. C’est un peu comme activer une machine à produire des idées sans interruption ! 💭",
+  5: "CatGPT : 🚀 Final round de ce palier ! Crée une dernière function: `unlockAutoIdea()`. Elle call `autoClick()` direct. C’est comme lancer une factory à idées non-stop 💭",
 
-  6: "CatGPT : 🕵️ Petit défi bonus ! Il existe une fonction cachée dans le système… Peut-être un truc comme `who.is.cristral()` ? Essaie de l'appeler depuis la console pour en savoir plus... 👀"
+  6: "CatGPT : 🕵️ Bonus challenge time! Y’a une hidden function dans le système... Un truc style `who.is.cristral()` ? Try de la call dans la console pour maybe uncover des secrets... 👀"
 };
 
 export default function MissionTerminal() {

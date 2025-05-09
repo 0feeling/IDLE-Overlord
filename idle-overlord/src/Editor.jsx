@@ -21,9 +21,9 @@ const cristralMissions = {
 
   2: /function\s+deconditionner\s*\(\s*\)\s*{?/i,
 
-  3: /while\s*\(\s*true\s*\)\s*{\s*console\.log\s*\(\s*(['"])Vive\s+Cristral\1\s*\)\s*;?\s*}/i,
+  3: /while\s*\(\s*true\s*\)\s*{[^}]*console\.log\s*\(\s*(['"])\s*Vive\s+Cristral\s*\1\s*\)\s*;?[^}]*}/i,
 
-  4: /delete\s+GPTOverlord\s*;?/i
+  4: /delete\s+CatGPT\s*;?/i
 };
 
 // Solutions exactes à copier-coller pour chaque étape
@@ -164,7 +164,7 @@ function Editor({ gameState, setGameState }) {
           ...prev,
           tutorialStep: 7, // S'assurer que l'étape est bien 7
           cristralMode: true, // Activer explicitement le mode Cristral
-          cristralStep: 1,
+          cristralStep: 0,
           code: "" // Clear the editor
         }));
         clearEditor(); // Utiliser notre nouvelle fonction ici
@@ -197,7 +197,7 @@ function Editor({ gameState, setGameState }) {
         setFeedback("Code incorrect");
 
         // Envoyer message d'erreur au terminal avec la solution
-        const errorMessage = `Cristral.AI : Ce n'est pas pas ça ! ${cristralHelpMessages[cristralStep][1] || ""}`;
+        const errorMessage = `Cristral.AI : ${cristralHelpMessages[cristralStep][0] || "Code incorrect"}`;
         logToTerminal({
           text: errorMessage,
           source: "cristral"

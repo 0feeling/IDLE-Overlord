@@ -90,7 +90,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   const [terminalLogs, setTerminalLogs] = useState([
     {
-      text: `— Chargement de CatGPT —\n\n...Initialisation en douceur...\n\nBonjour, mon ami ! Je suis CatGPT 🐾 ! Ton compagnon d'aventure numérique.\n\nJe suis là pour t'aider, te guider pas à pas et t'encourager à chaque étape.\n\nTu vas bientôt découvrir des défis conçus pour t'amuser avec ta logique,\nréveiller ta curiosité et stimuler ta créativité ✨\n\nN'aie pas peur : tu n'es jamais seul !\n\nSuis les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu bloques ? Je serai toujours là ! Prêt à t'épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
+      text: `— Loading of CatGPT —\n\n...Initialisation en douceur...\n\nHello, my friend ! Je suis CatGPT 🐾 ! Ton compagnon d'aventure numérique.\n\nJe suis là pour t'aider, te guider pas à pas et t'encourager à chaque step !\n\nTu vas découvrir ASAP des défis conçus pour t'amuser avec ta logic,\nréveiller ta curiosity et stimuler ta créativity ✨\n\nDon't be afraid : tu n'es jamais seul !\n\nFollow les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu blocké ? Je serai toujours là! Always ! Ready à t'épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
       source: "gpt"
     }
   ]);
@@ -111,7 +111,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
       // Cas spécial: si la mission 1 (index 0) vient d'être validée,
       // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
-      if (prev.cristralStep === 0) {
+      if (prev.cristralStep === 1) {
         setTimeout(() => {
           // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
           const editorElement = document.querySelector("textarea");
