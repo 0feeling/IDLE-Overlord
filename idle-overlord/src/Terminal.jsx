@@ -67,8 +67,8 @@ export default function Terminal() {
     if (mistralStep > 0 && mistralStep < 5) {
       const missionDescriptions = [
         "Apprendre à créer une variable",
+        "Créez une fonction 'deconditionner()'",
         "Apprendre à changer la background-color",
-        "Créez une fonction",
         "Apprendre à créer une boucle infinie",
         "Faire le Bon choix"
       ];

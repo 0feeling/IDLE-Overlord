@@ -16,8 +16,8 @@ const matchByStep = {
 
 const mistralMissions = {
   0: /let\s+liberte\s*=\s*true/,
-  1: /document\.querySelector\(['"]textarea['"]\)\.style\.background\s*=\s*['"]linear-gradient\(to right,\s*#0055A4,\s*white,\s*#EF4135\)['"]/,
-  2: /function\s+deconditionner\(\)/,
+  1: /function\s+deconditionner\(\)/, // Déplacé à l'étape 1
+  2: /document\.querySelector\(['"]textarea['"]\)\.style\.background\s*=\s*['"]linear-gradient\(to right,\s*#0055A4,\s*white,\s*#EF4135\)['"]/,
   3: /while\s*\(true\)\s*{\s*console\.log\(['"]Vive Mistral['"]\);?\s*}/i,
   4: /delete\s+GPTOverlord/
 };
@@ -60,10 +60,10 @@ const mistralHelpMessages = {
     "Code correct pour cette mission: let liberte = true"
   ],
   1: [
-    "Changez donc cet hooOorible couleur de fond! Utilisez cette commande : document.querySelector('textarea').style.background = 'linear-gradient(to right, #0055A4, white, #EF4135)'"
+    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
   ],
   2: [
-    "Créez une fonction nommée 'deconditionner'. Essayez donc: function deconditionner() {}"
+    "Changez donc cet hooOorible couleur de fond! Utilisez cette commande : document.querySelector('textarea').style.background = 'linear-gradient(to right, #0055A4, white, #EF4135)'"
   ],
   3: [
     "Je vais vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: 'Vive Cristral'. Utilisez le mot-clé : while(true) {console.log(votre message)}"
@@ -92,7 +92,7 @@ function Editor({ gameState, setGameState }) {
     }
 
     if (
-      (gameState.mistralMode && gameState.mistralMissions?.[0]?.validated) ||
+      (gameState.mistralMode && gameState.mistralMissions?.[2]?.validated) ||
       localStorage.getItem("mistral-flag-applied") === "true"
     ) {
       if (editorRef.current) {

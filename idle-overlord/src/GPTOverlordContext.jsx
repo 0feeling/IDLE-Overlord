@@ -53,23 +53,14 @@ const tutorialMissions = [
 ];
 
 // Missions de Mistral
+// Corriger l'ordre des missions
 const mistralMissions = [
-  {
-    instruction: "Apprendre à créer une variable",
-    validated: false
-  },
-  {
-    instruction: "Apprendre à changer la background-color / couleur de fond",
-    validated: false
-  },
-  { instruction: "Créer une fonction 'deconditionner()'", validated: false },
-  {
-    instruction: "Apprendre a créer une boucle'",
-    validated: false
-  },
-  { instruction: "Faire un choix", validated: false }
+  { instruction: "Apprendre à créer une variable", validated: false },
+  { instruction: "Créer une fonction 'deconditionner()'", validated: false }, // Étape 2 devient étape 1
+  { instruction: "Apprendre à changer la background-color", validated: false }, // Étape 1 devient étape 2
+  { instruction: "Apprendre à créer une boucle infinie", validated: false },
+  { instruction: "Faire le Bon choix", validated: false }
 ];
-
 const GPTOverlordContext = createContext();
 export const useGPTOverlord = () => useContext(GPTOverlordContext);
 
@@ -102,7 +93,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
       const newStep = prev + 1;
       // Cas spécial: si la mission 1 (index 0) vient d'être validée,
       // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
-      if (prev === 0) {
+      if (prev === 2) {
         setTimeout(() => {
           // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
           const editorElement = document.querySelector("textarea");
