@@ -9,6 +9,8 @@ function MissionPanel() {
   const missions = gameState.mistralMode
     ? gameState.mistralMissions
     : gameState.missions;
+
+  // Utiliser gameState.mistralStep pour le mode Mistral
   const currentStep = gameState.mistralMode
     ? gameState.mistralStep
     : gameState.tutorialStep;

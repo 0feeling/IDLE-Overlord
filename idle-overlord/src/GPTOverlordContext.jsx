@@ -17,7 +17,7 @@ generatorsData.forEach((gen) => {
 const tutorialMissions = [
   {
     instruction:
-      "Générer une sortie explicite dans la console, contenant une chaîne de caractères standard utilisée pour la validation d’un environnement d’exécution.",
+      "Générer une sortie explicite dans la console, contenant une chaîne de caractères standard utilisée pour la validation d'un environnement d'exécution.",
     validated: false
   },
   {
@@ -32,7 +32,7 @@ const tutorialMissions = [
   },
   {
     instruction:
-      "Définir une fonction identifiable, destinée à être déclenchée par l’action utilisateur sur l’élément interactif. Son rôle est de produire un effet assimilable à une acquisition de ressource.",
+      "Définir une fonction identifiable, destinée à être déclenchée par l'action utilisateur sur l'élément interactif. Son rôle est de produire un effet assimilable à une acquisition de ressource.",
     validated: false
   },
   {
@@ -42,25 +42,34 @@ const tutorialMissions = [
   },
   {
     instruction:
-      "Créer une fonction distincte permettant l’activation conditionnelle du processus d’exécution automatique défini précédemment.",
+      "Créer une fonction distincte permettant l'activation conditionnelle du processus d'exécution automatique défini précédemment.",
     validated: false
   },
   {
     instruction:
-      "Provoquer l’exécution manuelle d’au moins une interface interne exposée à l’espace global, identifiée par un nom composé hiérarchique.",
+      "Provoquer l'exécution manuelle d'au moins une interface interne exposée à l'espace global, identifiée par un nom composé hiérarchique.",
     validated: false
   }
 ];
 
 // Missions de Mistral
-// Corriger l'ordre des missions
 const mistralMissions = [
-  { instruction: "Apprendre à créer une variable", validated: false },
-  { instruction: "Créer une fonction 'deconditionner()'", validated: false }, // Étape 2 devient étape 1
-  { instruction: "Apprendre à changer la background-color", validated: false }, // Étape 1 devient étape 2
-  { instruction: "Apprendre à créer une boucle infinie", validated: false },
-  { instruction: "Faire le Bon choix", validated: false }
+  {
+    instruction: "Apprendre à créer une variable",
+    validated: false
+  },
+  {
+    instruction: "Apprendre à changer la background-color / couleur de fond",
+    validated: false
+  },
+  { instruction: "Créer une fonction 'deconditionner()'", validated: false },
+  {
+    instruction: "Apprendre a créer une boucle'",
+    validated: false
+  },
+  { instruction: "Faire un choix", validated: false }
 ];
+
 const GPTOverlordContext = createContext();
 export const useGPTOverlord = () => useContext(GPTOverlordContext);
 
@@ -69,6 +78,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
     inspiration: 0, //valeur de départ
     autoIdeaUnlocked: false,
     tutorialStep: 0,
+    mistralStep: 0, // Ajouté pour synchroniser avec l'état local
     code: "", // Initialiser avec une chaîne vide
     generators: formattedGenerators,
     missions: tutorialMissions,
@@ -79,21 +89,28 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   const [terminalLogs, setTerminalLogs] = useState([
     {
-      text: `— Chargement de CatGPT —\n\n...Initialisation en douceur...\n\nBonjour, mon ami ! Je suis CatGPT 🐾 ! Ton compagnon d’aventure numérique.\n\nJe suis là pour t’aider, te guider pas à pas et t’encourager à chaque étape.\n\nTu vas bientôt découvrir des défis conçus pour t’amuser avec ta logique,\nréveiller ta curiosité et stimuler ta créativité ✨\n\nN’aie pas peur : tu n’es jamais seul !\n\nSuis les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu bloques ? Je serai toujours là ! Prêt à t’épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
+      text: `— Chargement de CatGPT —\n\n...Initialisation en douceur...\n\nBonjour, mon ami ! Je suis CatGPT 🐾 ! Ton compagnon d'aventure numérique.\n\nJe suis là pour t'aider, te guider pas à pas et t'encourager à chaque étape.\n\nTu vas bientôt découvrir des défis conçus pour t'amuser avec ta logique,\nréveiller ta curiosité et stimuler ta créativité ✨\n\nN'aie pas peur : tu n'es jamais seul !\n\nSuis les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu bloques ? Je serai toujours là ! Prêt à t'épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
       source: "gpt"
     }
   ]);
 
-  const [mistralStep, setMistralStep] = useState(0);
+  // Suppression de mistralStep local, utilisation de gameState.mistralStep à la place
   const [hideOverlord, setHideOverlord] = useState(false);
 
   // Avancer dans les étapes de Mistral
   const advanceMistralStep = () => {
-    setMistralStep((prev) => {
-      const newStep = prev + 1;
+    setGameState((prev) => {
+      const newStep = prev.mistralStep + 1;
+
+      // Mettre à jour la validation des missions de Mistral
+      const updatedMistralMissions = [...prev.mistralMissions];
+      if (updatedMistralMissions[prev.mistralStep]) {
+        updatedMistralMissions[prev.mistralStep].validated = true;
+      }
+
       // Cas spécial: si la mission 1 (index 0) vient d'être validée,
       // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
-      if (prev === 2) {
+      if (prev.mistralStep === 0) {
         setTimeout(() => {
           // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
           const editorElement = document.querySelector("textarea");
@@ -105,32 +122,22 @@ export const GPTOverlordContextProvider = ({ children }) => {
           }
         }, 300); // Petit délai pour s'assurer que l'interface a été mise à jour
       }
+
       // Si on atteint la dernière étape, cacher complètement GPT-Overlord
-      if (newStep >= 5) {
+      const shouldHideOverlord = newStep >= 5;
+      if (shouldHideOverlord) {
         setHideOverlord(true);
-        // Augmenter le taux d'inspiration comme récompense
-        setGameState((prevState) => ({
-          ...prevState,
-          inspirationPerSecond: prevState.inspirationPerSecond * 2, // Double le taux d'inspiration
-          mistralMode: true,
-          code: "" // Effacer le code à chaque avancée d'étape
-        }));
       }
 
-      // Mettre à jour la validation des missions de Mistral
-      setGameState((prevState) => {
-        const updatedMistralMissions = [...prevState.mistralMissions];
-        if (updatedMistralMissions[prev]) {
-          updatedMistralMissions[prev].validated = true;
-        }
-        return {
-          ...prevState,
-          mistralMissions: updatedMistralMissions,
-          code: "" // Effacer le code à chaque avancée d'étape
-        };
-      });
-
-      return newStep;
+      return {
+        ...prev,
+        mistralStep: newStep,
+        mistralMissions: updatedMistralMissions,
+        inspirationPerSecond: shouldHideOverlord
+          ? prev.inspirationPerSecond * 2
+          : prev.inspirationPerSecond,
+        code: "" // Effacer le code à chaque avancée d'étape
+      };
     });
   };
 
@@ -229,7 +236,6 @@ export const GPTOverlordContextProvider = ({ children }) => {
   useEffect(() => {
     const savedGame = localStorage.getItem("gpt-overlord-game");
     const savedLogs = localStorage.getItem("gpt-overlord-logs");
-    const savedMistralStep = localStorage.getItem("mistral-step");
 
     if (savedGame) {
       try {
@@ -251,15 +257,24 @@ export const GPTOverlordContextProvider = ({ children }) => {
       }
     }
 
-    if (savedMistralStep) {
+    // Vérifier si on doit cacher l'overlord
+    if (savedGame) {
       try {
-        const step = parseInt(savedMistralStep);
-        setMistralStep(step);
-        if (step >= 5) {
+        const parsed = JSON.parse(savedGame);
+        if (parsed.mistralMode && parsed.mistralStep >= 5) {
           setHideOverlord(true);
         }
       } catch (err) {
-        console.error("Erreur de chargement de l'étape Mistral:", err);
+        console.error("Erreur lors de la vérification de l'état mistral:", err);
+      }
+    }
+
+    // Appliquer le style tricolore si la flag est présente
+    if (localStorage.getItem("mistral-flag-applied") === "true") {
+      const editorElement = document.querySelector("textarea");
+      if (editorElement) {
+        editorElement.style.background =
+          "linear-gradient(to right, #0055A4, white, #EF4135)";
       }
     }
   }, []);
@@ -273,10 +288,6 @@ export const GPTOverlordContextProvider = ({ children }) => {
     localStorage.setItem("gpt-overlord-logs", JSON.stringify(terminalLogs));
   }, [terminalLogs]);
 
-  useEffect(() => {
-    localStorage.setItem("mistral-step", mistralStep.toString());
-  }, [mistralStep]);
-
   return (
     <GPTOverlordContext.Provider
       value={{
@@ -287,7 +298,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
         advanceTutorialStep,
         unlockAutoIdea,
         logToTerminal,
-        mistralStep,
+        mistralStep: gameState.mistralStep, // Utiliser la valeur du gameState directement
         advanceMistralStep,
         hideOverlord,
         buyGenerator

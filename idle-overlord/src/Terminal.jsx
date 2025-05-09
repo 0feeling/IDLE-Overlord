@@ -5,13 +5,8 @@ import OverlordFeedback from "./OverlordFeedback";
 import MistralFeedback from "./MistralFeedback";
 
 export default function Terminal() {
-  const {
-    gameState,
-    terminalLogs,
-    setTerminalLogs,
-    mistralStep,
-    hideOverlord
-  } = useGPTOverlord();
+  const { gameState, terminalLogs, setTerminalLogs, hideOverlord } =
+    useGPTOverlord();
 
   const [messagesGPT, setMessagesGPT] = useState([
     "... Initialisation ... Utilisez l'éditeur de code pour accomplir les missions. Appuyez sur Exécuter ou Ctrl+Enter pour valider."
@@ -40,14 +35,16 @@ export default function Terminal() {
     }
   }, [messagesGPT, messagesMistral]);
 
+  // Vérifier si on doit montrer Mistral
   useEffect(() => {
-    if (gameState.tutorialStep >= 7 && mistralStep >= 1) {
+    if (gameState.mistralMode) {
       setShowMistral(true);
     }
-  }, [gameState.tutorialStep, mistralStep]);
+  }, [gameState.mistralMode]);
 
+  // Initialisation des messages Mistral lors du passage en mode Mistral
   useEffect(() => {
-    if (gameState.tutorialStep === 7 && !showMistral && mistralStep === 0) {
+    if (gameState.mistralMode && gameState.mistralStep === 0 && !showMistral) {
       const timer = setTimeout(() => {
         setShowMistral(true);
         setMessagesMistral((prev) => [
@@ -61,24 +58,29 @@ export default function Terminal() {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [gameState.tutorialStep, mistralStep, showMistral]);
+  }, [gameState.mistralMode, gameState.mistralStep, showMistral]);
 
+  // Ajout des messages pour les missions Mistral
   useEffect(() => {
-    if (mistralStep > 0 && mistralStep < 5) {
+    if (
+      gameState.mistralMode &&
+      gameState.mistralStep > 0 &&
+      gameState.mistralStep < 5
+    ) {
       const missionDescriptions = [
         "Apprendre à créer une variable",
-        "Créez une fonction 'deconditionner()'",
         "Apprendre à changer la background-color",
+        "Créez une fonction",
         "Apprendre à créer une boucle infinie",
         "Faire le Bon choix"
       ];
 
       setMessagesMistral((prev) => [
         ...prev,
-        `Mistral.AI : Prochaine mission: ${missionDescriptions[mistralStep]}`
+        `Mistral.AI : Prochaine mission: ${missionDescriptions[gameState.mistralStep]}`
       ]);
     }
-  }, [mistralStep]);
+  }, [gameState.mistralStep, gameState.mistralMode]);
 
   return (
     <div className="w-1/3 bg-gray-950 p-4 flex flex-col h-full border-r border-gray-700">
