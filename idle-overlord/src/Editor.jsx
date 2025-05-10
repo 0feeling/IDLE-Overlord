@@ -4,7 +4,7 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 
 // Constantes pour les vérifications de code
 const matchByStep = {
-  0: /console\.log\s*\(\s*(['"])\s*hello world\s*\1\s*\)\s*;?/i,
+  0: /console\.log\s*\(\s*(['"])\s*hello world!?\s*\1\s*\)\s*;?/i,
   // ✅ Tolère : guillemets simples/doubles, majuscules/minuscules, espaces, point-virgule optionnel
 
   1: /function\s+unlockButton\s*\(\s*\)\s*\{?/i,
@@ -13,7 +13,7 @@ const matchByStep = {
   2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
   // ✅ Déjà très souple : attributs optionnels, casse insensible, tolère les espaces
 
-  3: /function\s+gainInspiration\s*\(\s*\)\s*\{?/i,
+  3: /(?=.*g[ae]i?n)(?=.*spi)(?=.*rat)(?=.*ion)(?=.*click)/is,
   // ✅ Tolère : espaces, absence de {, casse insensible
 
   4: /function\s+autoClick\s*\(\s*\)\s*\{\s*setInterval\s*\(\s*gainInspiration\s*,\s*1000\s*\)\s*;?\s*\}?/i,
@@ -31,7 +31,7 @@ const cristralMissions = {
 
   // ✅ Tolère les espaces, point-virgule optionnel, insensible à la casse
 
-  1: /(let\s+\w+\s*=\s*)?document\s*\.\s*querySelector\s*\(\s*(['"])\s*(textarea|editor)\s*\2\s*\)\s*\.style\.background\s*=\s*\2\s*linear-gradient\s*\(\s*to\s+(right|left)\s*,\s*((?:\s*(?:#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc)\s*,\s*){2}(?:#0055A4|blue|bleu|#EF4135|red|rouge|white|blanc))\s*\)\s*\2\s*;?/i,
+  1: /(bleu|blue|#|rouge|red|blanc|white).*(bleu|blue|#|rouge|red|blanc|white).*(bleu|blue|#|rouge|red|blanc|white).*background/i,
   // ✅ Plus de tolérance :
   // - couleurs en français ou anglais
   // - quotes simples/doubles cohérentes
@@ -67,8 +67,8 @@ const helpMessages = {
     "Try this : `<button>Inspiration</button>` dans ton fichier HTML. This little guy is ready to become a magic trigger 🪄"
   ],
   3: [
-    'Write une function comme `function gainInspiration() {}` — puis sur ton button, mets `onclick="gainInspiration()"`. Voilà ton combo gagnant 🎯',
-    'Copy this duo: `function gainInspiration() {}` et dans le bouton : `onclick="gainInspiration()"`. Power activated 🧩'
+    `Write une function comme 'gainInspiration() {}' — puis ton button, puis mets "onclick="gainInspiration()" dedans. Voilà ton combo de winner 🎯`,
+    `Like that: function gainInspiration() \n {} <button onclick="gainInspiration()">Inspiration</button> Power activated 🧩`
   ],
   4: [
     "Keep it up! Crée une function `autoClick()` avec ce qu’il faut inside : `setInterval(gainInspiration, 1000);`. Du coup, ça donne : `function autoClick() { setInterval(gainInspiration, 1000); }` ⏱️",
