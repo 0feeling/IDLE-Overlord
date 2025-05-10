@@ -60,7 +60,7 @@ export default function Terminal() {
       gameState.cristalStep < 5
     ) {
       const missionDescriptions = [
-        "Apprendre à créer une variable",
+        "Apprendre à créer une variable en Appliquant dans la console la commande : ' let freedom = true ' ",
         "Apprendre à changer la background-color",
         "Créez une fonction",
         "Apprendre à créer une boucle infinie",
