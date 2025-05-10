@@ -51,7 +51,7 @@ function MissionPanel() {
       <div className="bg-gray-900 p-3 border-b border-gray-700 sticky top-0">
         <h2 className="text-blue-300 text-xs uppercase tracking-wide font-semibold mb-1 flex items-center">
           <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse"></span>
-          {gameState.cristalMode ? "Mission Cristal" : "Mission actuelle"}
+          {gameState.cristalMode ? "Mission Actuelle" : "Current Mission"}
         </h2>
         <div className="flex items-start gap-3 py-1">
           <div className="mt-0.5">

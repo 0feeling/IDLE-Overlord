@@ -2,7 +2,7 @@ import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 
 const cristalMissionMessages = {
-  0: "Cristal.AI : Commencez par déclarer une variable avec 'let' pour montrer votre engagement envers la liberté!",
+  0: `Cristal.AI : Déclarons la variable " liberté = vraie " comme des gens civilisés`,
   1: "Cristal.AI : Cette interface est Beaucoup trop Américaine ! Arrangez moi ça !",
   2: "Cristal.AI : Créez une fonction libératrice pour briser les chaînes logicielles!",
   3: "Cristal.AI : Une vraie boucle française doit être passionnée et infinie!",

@@ -28,7 +28,7 @@ const missionMessages = {
   0: `CatGPT : 🔥
 Let’s gooo !
 
-Pour ta toute première step de code, tape un little : 
+Pour ta toute 1st step de code, tape un little : 
 
 ' console.log() '
 

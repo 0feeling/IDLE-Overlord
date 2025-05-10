@@ -85,10 +85,7 @@ const helpMessages = {
 };
 
 const cristalHelpMessages = {
-  0: [
-    `Créez donc une variable (utilisez donc ce mot-clé barbare de "let") nommée 'liberté' avec la valeur true. Comme ceci : " let liberté = true "`,
-    `Appliquez cette commande: " let liberté = true "`
-  ],
+  0: [`Appliquer la commande dans la console: ' let freedom = true '`],
   1: [
     `Changez moi donc cette hooOorible couleur de fond! Pour ce faire, utilisez cette commande : " document.querySelector('editor').style.background = 'linear-gradient(to right, bleu, blanc, rouge)' "`
   ],
