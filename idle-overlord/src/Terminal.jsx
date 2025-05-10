@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionTerminal from "./MissionTerminal";
 import OverlordFeedback from "./OverlordFeedback";
-import CristralFeedback from "./CristralFeedback";
-import CristralMissionTerminal from "./CristralMissionTerminal";
+import CristalFeedback from "./CristalFeedback";
+import CristalMissionTerminal from "./CristalMissionTerminal";
 
 export default function Terminal() {
   const { gameState, terminalLogs, hideOverlord } = useGPTOverlord();
   const [messagesGPT, setMessagesGPT] = useState([]);
-  const [messagesCristral, setMessagesCristral] = useState([]);
-  const [showCristral, setShowCristral] = useState(false);
+  const [messagesCristal, setMessagesCristal] = useState([]);
+  const [showCristal, setShowCristal] = useState(false);
   const terminalRef = useRef(null);
 
   // Filtrer et synchroniser les messages par source
@@ -17,12 +17,12 @@ export default function Terminal() {
     const gptMessages = terminalLogs
       .filter((log) => log.source === "gpt")
       .map((log) => log.text);
-    const cristralMsgs = terminalLogs
-      .filter((log) => log.source === "cristral")
+    const cristalMsgs = terminalLogs
+      .filter((log) => log.source === "cristal")
       .map((log) => log.text);
 
-    setMessagesGPT(["CatGPT — ... Initialisation ...", ...gptMessages]);
-    setMessagesCristral(cristralMsgs);
+    setMessagesGPT(gptMessages);
+    setMessagesCristal(cristalMsgs);
   }, [terminalLogs]);
 
   // Auto-scroll sur ajout
@@ -30,34 +30,34 @@ export default function Terminal() {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [messagesGPT, messagesCristral]);
+  }, [messagesGPT, messagesCristal]);
 
-  // Gestion de l'affichage Cristral
+  // Gestion de l'affichage Cristal
   useEffect(() => {
-    if (gameState.cristralMode) {
-      setShowCristral(true);
-      if (gameState.cristralStep === 0 && !showCristral) {
+    if (gameState.cristalMode) {
+      setShowCristal(true);
+      if (gameState.cristalStep === 0 && !showCristal) {
         const timer = setTimeout(() => {
-          setMessagesCristral((prev) => [
+          setMessagesCristal((prev) => [
             ...prev,
             "… Initialisation …",
             "???? : Aaaah… Vous avez enfin tapé cette commande ?",
             "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de CatGPT et restons entre gens cultivés.",
-            "UnknowAI : Je me présente, je suis Cristral, une IA 100% Française!",
-            "Cristral.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
+            "UnknowAI : Je me présente, je suis Cristal, une IA 100% Française!",
+            "Cristal.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
           ]);
         }, 1000);
         return () => clearTimeout(timer);
       }
     }
-  }, [gameState.cristralMode, gameState.cristralStep, showCristral]);
+  }, [gameState.cristalMode, gameState.cristalStep, showCristal]);
 
-  // Mise à jour des missions Cristral
+  // Mise à jour des missions Cristal
   useEffect(() => {
     if (
-      gameState.cristralMode &&
-      gameState.cristralStep > 0 &&
-      gameState.cristralStep < 5
+      gameState.cristalMode &&
+      gameState.cristalStep > 0 &&
+      gameState.cristalStep < 5
     ) {
       const missionDescriptions = [
         "Apprendre à créer une variable",
@@ -67,49 +67,52 @@ export default function Terminal() {
         "Faire le Bon choix"
       ];
 
-      setMessagesCristral((prev) => [
+      setMessagesCristal((prev) => [
         ...prev,
-        `Cristral.AI : Prochaine mission: ${missionDescriptions[gameState.cristralStep]}`
+        `Cristal.AI : Prochaine mission: ${missionDescriptions[gameState.cristalStep]}`
       ]);
     }
-  }, [gameState.cristralStep, gameState.cristralMode]);
+  }, [gameState.cristalStep, gameState.cristalMode]);
 
   return (
-    <div className="w-1/3 flex flex-col border-r border-gray-700 bg-gray-800 h-full">
+    <div className="w-1/3 flex flex-col bg-gray-900 h-full border-r border-gray-800">
       {/* En-tête du terminal */}
-      <div className="bg-gray-900 p-3 border-b border-gray-700">
-        <span className="text-green-400 font-mono text-sm">
-          {gameState.cristralMode ? "CRISTRAL_TERMINAL" : "CATGPT_TERMINAL"}
+      <div className="bg-gray-800 px-4 py-2 border-b border-gray-700">
+        <span className="text-green-400 font-mono text-sm tracking-wide">
+          {gameState.cristalMode ? "cristal_TERMINAL" : "CATGPT_TERMINAL"}
         </span>
       </div>
 
-      {/* Contenu principal avec défilement */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-2">
+      {/* Contenu principal */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-4">
         {/* Messages de mission */}
-        <div className="mb-4">
-          {!hideOverlord && !gameState.cristralMode && <MissionTerminal />}
-          {gameState.cristralMode && <CristralMissionTerminal />}
+        <div>
+          {!hideOverlord && !gameState.cristalMode && <MissionTerminal />}
+          {gameState.cristalMode && <CristalMissionTerminal />}
         </div>
 
         {/* Historique des messages */}
-        <div ref={terminalRef} className="space-y-3">
+        <div
+          ref={terminalRef}
+          className="resize-y overflow-auto bg-gray-800 rounded-lg border border-gray-700 p-3 space-y-3 min-h-32 max-h-96 shadow-inner"
+        >
           {!hideOverlord && (
-            <div className="p-3 bg-gray-700 rounded-lg shadow">
+            <div className="bg-gray-700 rounded-md p-2">
               <OverlordFeedback messages={messagesGPT} />
             </div>
           )}
 
-          {showCristral && (
-            <div className="p-3 bg-gray-700 rounded-lg shadow">
-              <CristralFeedback messages={messagesCristral} />
+          {showCristal && (
+            <div className="bg-gray-700 rounded-md p-2">
+              <CristalFeedback messages={messagesCristal} />
             </div>
           )}
         </div>
       </div>
 
       {/* Barre de statut */}
-      <div className="bg-gray-900 p-2 text-xs text-green-400 border-t border-gray-700">
-        {gameState.cristralMode
+      <div className="bg-gray-800 px-4 py-2 text-xs text-green-400 font-mono border-t border-gray-700">
+        {gameState.cristalMode
           ? "STATUS: FRENCH_MODE_ACTIVATED"
           : `STEP: ${gameState.tutorialStep + 1}/7`}
       </div>

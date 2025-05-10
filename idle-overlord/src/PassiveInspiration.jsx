@@ -6,7 +6,8 @@ function PassiveInspiration({ interval = 1000 }) {
 
   useEffect(() => {
     // N'activer que si l'autoIdea est débloquée
-    if (!gameState.autoIdeaUnlocked) return;
+    if (!gameState.autoIdeaUnlocked || gameState.inspirationPerSecond <= 0)
+      return;
 
     const id = setInterval(() => {
       setGameState((prev) => ({

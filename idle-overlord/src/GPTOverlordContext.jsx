@@ -16,6 +16,10 @@ generatorsData.forEach((gen) => {
 // Missions du tutoriel
 const tutorialMissions = [
   {
+    instruction: "Êtes-vous prêt à commencer l'aventure ?",
+    validated: false
+  },
+  {
     instruction:
       "Générer une sortie explicite dans la console, contenant une chaîne de caractères standard utilisée pour la validation d'un environnement d'exécution.",
     validated: false
@@ -52,8 +56,8 @@ const tutorialMissions = [
   }
 ];
 
-// Missions de Cristral
-const cristralMissions = [
+// Missions de Cristal
+const cristalMissions = [
   {
     instruction: "Apprendre à créer une variable",
     validated: false
@@ -78,40 +82,39 @@ export const GPTOverlordContextProvider = ({ children }) => {
   const [gameState, setGameState] = useState({
     inspiration: 0, //valeur de départ
     autoIdeaUnlocked: false,
-    tutorialStep: 0,
-    cristralStep: 0, // Ajouté pour synchroniser avec l'état local
+    tutorialStep: -1,
+    cristalStep: 0, // Ajouté pour synchroniser avec l'état local
     code: "", // Initialiser avec une chaîne vide
     generators: formattedGenerators,
     missions: tutorialMissions,
-    cristralMissions: cristralMissions,
+    cristalMissions: cristalMissions,
     inspirationPerSecond: 0, // Nouveau: taux total d'inspiration/seconde
-    cristralMode: false // Indique si on est en mode Cristral
+    cristalMode: false // Indique si on est en mode Cristal
   });
 
-  const [terminalLogs, setTerminalLogs] = useState([
-    {
-      text: `— Loading of CatGPT —\n\n...Initialisation en douceur...\n\nHello, my friend ! Je suis CatGPT 🐾 ! Ton compagnon d'aventure numérique.\n\nJe suis là pour t'aider, te guider pas à pas et t'encourager à chaque step !\n\nTu vas découvrir ASAP des défis conçus pour t'amuser avec ta logic,\nréveiller ta curiosity et stimuler ta créativity ✨\n\nDon't be afraid : tu n'es jamais seul !\n\nFollow les instructions, fais de ton mieux, et surtout... fais-toi confiance.\n\nEt si tu blocké ? Je serai toujours là! Always ! Ready à t'épauler !\n\nOn va apprendre ensemble ! Tranquillement, mais sûrement 💡💛`,
-      source: "gpt"
-    }
-  ]);
+  const [terminalLogs, setTerminalLogs] = useState([]);
 
-  // Suppression de cristralStep local, utilisation de gameState.cristralStep à la place
+  // Suppression de cristalStep local, utilisation de gameState.cristalStep à la place
   const [hideOverlord, setHideOverlord] = useState(false);
 
-  // Avancer dans les étapes de Cristral
-  const advanceCristralStep = () => {
+  // Avancer dans les étapes de Cristal
+  const advanceCristalStep = () => {
     setGameState((prev) => {
-      const newStep = prev.cristralStep + 1;
+      const newStep = prev.cristalStep + 1;
 
-      // Mettre à jour la validation des missions de Cristral
-      const updatedCristralMissions = [...prev.cristralMissions];
-      if (updatedCristralMissions[prev.cristralStep]) {
-        updatedCristralMissions[prev.cristralStep].validated = true;
+      // Mettre à jour la validation des missions de Cristal
+      const updatedCristalMissions = [...prev.cristalMissions];
+      if (updatedCristalMissions[prev.cristalStep]) {
+        updatedCristalMissions[prev.cristalStep].validated = true;
+        if (newStep >= 5) {
+          setGameState((prev) => ({ ...prev, hideOverlord: true }));
+          setGameState((prev) => ({ ...prev, cristalMode: false })); // Désactive le mode
+        }
       }
 
       // Cas spécial: si la mission 1 (index 0) vient d'être validée,
       // appliquer le drapeau tricolore au fond de l'éditeur de façon permanente
-      if (prev.cristralStep === 1) {
+      if (prev.cristalStep === 1) {
         setTimeout(() => {
           // Sélectionner l'élément textarea (l'éditeur) et appliquer le style
           const editorElement = document.querySelector("textarea");
@@ -119,7 +122,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
             editorElement.style.background =
               "linear-gradient(to right, #0055A4, white, #EF4135)";
             // Stocker l'information que le style a été appliqué
-            localStorage.setItem("cristral-flag-applied", "true");
+            localStorage.setItem("cristal-flag-applied", "true");
           }
         }, 300); // Petit délai pour s'assurer que l'interface a été mise à jour
       }
@@ -132,8 +135,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
       return {
         ...prev,
-        cristralStep: newStep,
-        cristralMissions: updatedCristralMissions,
+        cristalStep: newStep,
+        cristalMissions: updatedCristalMissions,
         inspirationPerSecond: shouldHideOverlord
           ? prev.inspirationPerSecond * 2
           : prev.inspirationPerSecond,
@@ -173,9 +176,11 @@ export const GPTOverlordContextProvider = ({ children }) => {
   // Fonction pour avancer dans le tutoriel
   const advanceTutorialStep = () => {
     setGameState((prev) => {
+      const newStep = prev.tutorialStep + 1;
       const updatedMissions = [...prev.missions];
-      if (updatedMissions[prev.tutorialStep]) {
-        updatedMissions[prev.tutorialStep].validated = true;
+
+      if (updatedMissions[newStep - 1]) {
+        updatedMissions[newStep - 1].validated = true;
       }
 
       return {
@@ -191,7 +196,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
   const unlockAutoIdea = () => {
     setGameState((prev) => ({
       ...prev,
-      autoIdeaUnlocked: true
+      autoIdeaUnlocked: true,
+      tutorialStep: Math.min(prev.tutorialStep + 1, 6) // Reste à l'étape 6 (max)
     }));
   };
 
@@ -221,7 +227,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   // Production passive d'inspiration
   useEffect(() => {
-    if (!gameState.autoIdeaUnlocked && !gameState.cristralMode) return;
+    if (!gameState.autoIdeaUnlocked && !gameState.cristalMode) return;
 
     const interval = setInterval(() => {
       setGameState((prev) => ({
@@ -231,7 +237,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [gameState.autoIdeaUnlocked, gameState.cristralMode]);
+  }, [gameState.autoIdeaUnlocked, gameState.cristalMode]);
 
   // Sauvegarde et chargement du jeu
   useEffect(() => {
@@ -262,19 +268,16 @@ export const GPTOverlordContextProvider = ({ children }) => {
     if (savedGame) {
       try {
         const parsed = JSON.parse(savedGame);
-        if (parsed.cristralMode && parsed.cristralStep >= 5) {
+        if (parsed.cristalMode && parsed.cristalStep >= 5) {
           setHideOverlord(true);
         }
       } catch (err) {
-        console.error(
-          "Erreur lors de la vérification de l'état cristral:",
-          err
-        );
+        console.error("Erreur lors de la vérification de l'état cristal:", err);
       }
     }
 
     // Appliquer le style tricolore si la flag est présente
-    if (localStorage.getItem("cristral-flag-applied") === "true") {
+    if (localStorage.getItem("cristal-flag-applied") === "true") {
       const editorElement = document.querySelector("textarea");
       if (editorElement) {
         editorElement.style.background =
@@ -302,8 +305,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         advanceTutorialStep,
         unlockAutoIdea,
         logToTerminal,
-        cristralStep: gameState.cristralStep, // Utiliser la valeur du gameState directement
-        advanceCristralStep,
+        cristalStep: gameState.cristalStep, // Utiliser la valeur du gameState directement
+        advanceCristalStep,
         hideOverlord,
         buyGenerator
       }}

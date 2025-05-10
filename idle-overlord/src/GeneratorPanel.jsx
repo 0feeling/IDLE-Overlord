@@ -15,7 +15,8 @@ function GeneratorPanel({ id, data, inspiration, buyGenerator }) {
         </div>
       </div>
       <button
-        onClick={() => buyGenerator(id)}
+        aria-disabled={inspiration < cost}
+        onClick={() => inspiration >= cost && buyGenerator(id)}
         disabled={inspiration < cost}
         className={`px-3 py-1 rounded ${
           inspiration >= cost

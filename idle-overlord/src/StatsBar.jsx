@@ -6,7 +6,9 @@ function StatsBar({ gameState }) {
       <div>💡 Inspiration: {gameState.inspiration.toFixed(1)}</div>
       <div>
         <span className="text-yellow-400">⚡</span> Par seconde:{" "}
-        {gameState.inspirationPerSecond.toFixed(1)}
+        {Number.isInteger(gameState.inspirationPerSecond)
+          ? gameState.inspirationPerSecond
+          : gameState.inspirationPerSecond.toFixed(1)}
       </div>
       <div>
         {gameState.autoIdeaUnlocked ? (

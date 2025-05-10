@@ -2,29 +2,19 @@ import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 
 function UnlockAutoIdeaButton({ threshold = 50 }) {
-  const { gameState, setGameState, unlockAutoIdea, logToTerminal } =
-    useGPTOverlord();
+  const { gameState, unlockAutoIdea, logToTerminal } = useGPTOverlord();
   const { inspiration, autoIdeaUnlocked } = gameState;
 
   const handleUnlock = () => {
-    if (inspiration >= threshold && typeof unlockAutoIdea === "function") {
-      // Appel de la fonction de déverrouillage
+    if (inspiration >= threshold) {
+      // Déclenche le déverrouillage via le contexte
       unlockAutoIdea();
 
-      // Réduction de l'inspiration
-      setGameState((prev) => ({
-        ...prev,
-        inspiration: prev.inspiration - threshold
-      }));
-
-      // Log dans le terminal
-      if (typeof logToTerminal === "function") {
-        logToTerminal("CatGPT: Passive generation module unlocked.");
-      }
+      // Met à jour l'inspiration
+      logToTerminal("CatGPT: Production passive activée ! 🚀");
     }
   };
 
-  // Ne pas afficher si déjà déverrouillé ou si l'étape du tutoriel n'est pas assez avancée
   if (autoIdeaUnlocked || gameState.tutorialStep < 6) return null;
 
   return (

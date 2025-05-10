@@ -11,7 +11,6 @@ import {
 import InspirationButton from "./InspirationButton";
 import PassiveInspiration from "./PassiveInspiration";
 import UnlockAutoIdeaButton from "./UnlockAutoIdeaButton";
-import MissionPanel from "./MissionPanel";
 import AllGeneratorsPanel from "./AllGeneratorsPanel";
 
 function App() {
@@ -25,15 +24,13 @@ function App() {
 function AppContent() {
   const { gameState, setGameState } = useGPTOverlord();
 
-  const currentStep = gameState.tutorialStep;
-  const currentMission = gameState.missions?.[currentStep];
-
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col relative">
       <StatsBar gameState={gameState} />
       <PassiveInspiration />
       <InspirationButton />
       <UnlockAutoIdeaButton />
+
       <div className="flex flex-1">
         <Terminal />
         <Editor gameState={gameState} setGameState={setGameState} />
@@ -41,13 +38,8 @@ function AppContent() {
           <AllGeneratorsPanel />
         </div>
       </div>
+
       <OverlayMessage gameState={gameState} />
-      {currentMission && (
-        <MissionPanel
-          mission={currentMission.instruction}
-          isValidated={currentMission.validated}
-        />
-      )}
     </div>
   );
 }

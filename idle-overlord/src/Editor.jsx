@@ -4,7 +4,7 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 
 // Constantes pour les vérifications de code
 const matchByStep = {
-  0: /console\.log\s*\(\s*(['"])\s*hello world!?\s*\1\s*\)\s*;?/i,
+  0: /console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
   // ✅ Tolère : guillemets simples/doubles, majuscules/minuscules, espaces, point-virgule optionnel
 
   1: /function\s+unlockButton\s*\(\s*\)\s*\{?/i,
@@ -22,16 +22,16 @@ const matchByStep = {
   5: /function\s+unlockAutoIdea\s*\(\s*\)\s*\{\s*autoClick\s*\(\s*\)\s*;?\s*\}?/i,
   // ✅ Tolérant sur les espaces, les points-virgules et les accolades
 
-  6: /\b(who\.is\.cristral\s*\(\s*\)|system\.debug\s*\(.*\))/i
+  6: /\b(who\.is\.cristal\s*\(\s*\)|system\.debug\s*\(.*\))/i
   // ✅ Tolère les espaces, casse insensible, parenthèses vides ou pas
 };
 
-const cristralMissions = {
+const cristalMissions = {
   0: /let\s+libert[ée]\s*=\s*true\s*;?/i,
 
   // ✅ Tolère les espaces, point-virgule optionnel, insensible à la casse
 
-  1: /(bleu|blue|#|rouge|red|blanc|white).*(bleu|blue|#|rouge|red|blanc|white).*(bleu|blue|#|rouge|red|blanc|white).*background/i,
+  1: /(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)/i,
   // ✅ Plus de tolérance :
   // - couleurs en français ou anglais
   // - quotes simples/doubles cohérentes
@@ -42,9 +42,9 @@ const cristralMissions = {
   2: /function\s+deconditionner\s*\(\s*\)\s*\{?/i,
   // ✅ Tolère les espaces, l’accolade optionnelle, insensible à la casse
 
-  3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristral\s*\1\s*\)\s*;?[^}]*\}/i,
+  3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
   // ✅ Tolère :
-  // - insensible à la casse (`vive Cristral`, `VIVE CRISTRAL`)
+  // - insensible à la casse (`vive Cristal`, `VIVE CRISTAL`)
   // - du code intermédiaire dans la boucle
   // - point-virgule optionnel
 
@@ -55,36 +55,36 @@ const cristralMissions = {
 // Solutions exactes à copier-coller pour chaque étape
 const helpMessages = {
   0: [
-    "Alright, let’s go! Copy/paste `console.log('Hello World!');` — avec les single quotes et le point-virgule si tu veux faire ça clean ✨ You got this!",
-    "Try with `console.log('Hello World!');` — it’s like envoyer a little postcard to la console 📬"
+    "Alright, let’s go! Copy/Colle `console.log('Hello World!');` — avec les single quotes et le point-virgule si tu veux faire ça clean ✨ You got this!",
+    "Try with :\n `console.log('Hello World!');` — it’s like envoyer a little postcard to la console 📬"
   ],
   1: [
     "So close! Il te suffit d’écrire `function unlockButton()` suivi de `{}`. Donc copie ça : `function unlockButton() {}` 💛",
-    "Tu peux just write `function unlockButton() {}` — une promise que tu vas fill it up later 😉"
+    "Tu peux just write :\n `function unlockButton() {}` — une promise que tu vas fill it up later 😉"
   ],
   2: [
     "In your HTML, ajoute juste : `<button>Inspiration</button>` — super chill, super simple 🌸 Voilà ce qu’il te faut exactement.",
-    "Try this : `<button>Inspiration</button>` dans ton fichier HTML. This little guy is ready to become a magic trigger 🪄"
+    "Try this :\n `<button>Inspiration</button>` dans ton fichier HTML. This little guy is ready to become a magic trigger 🪄"
   ],
   3: [
     `Write une function comme 'gainInspiration() {}' — puis ton button, puis mets "onclick="gainInspiration()" dedans. Voilà ton combo de winner 🎯`,
-    `Like that: function gainInspiration() \n {} <button onclick="gainInspiration()">Inspiration</button> Power activated 🧩`
+    `Like that:\n function gainInspiration() \n {} <button onclick="gainInspiration()">Inspiration</button> Power activated 🧩`
   ],
   4: [
     "Keep it up! Crée une function `autoClick()` avec ce qu’il faut inside : `setInterval(gainInspiration, 1000);`. Du coup, ça donne : `function autoClick() { setInterval(gainInspiration, 1000); }` ⏱️",
-    "Essaie ça : `function autoClick() { setInterval(gainInspiration, 1000); }`. That’s ton timer qui bosse nonstop ⏰"
+    "Essaie ça :\n `function autoClick() { setInterval(gainInspiration, 1000); }`. That’s ton timer qui bosse nonstop ⏰"
   ],
   5: [
-    "Almost there! Tu dois écrire juste : `function unlockAutoIdea() { autoClick(); }`. One line, one goal 🏁",
-    "You can go with `function unlockAutoIdea() { autoClick(); }` — it’s like hitting the start button for tes idées 💫"
+    "Almost there! Tu dois écrire juste : `function unlockAutoIdea(){} avec inside les crochets la function autoClick();`. One line, one goal 🏁",
+    "You can go with :\n `function unlockAutoIdea() { autoClick(); }` — it’s like hitting the start button for tes idées 💫"
   ],
   6: [
-    "Go ahead and try : `who.is.cristral()` dans la console. That’s the line, trust the process 🤫",
-    "Just copy this : `who.is.cristral()` — let the easter egg magic happen 👽"
+    "Go ahead and try : `who.is.cristal()` dans la console. That’s the line, trust the process 🤫",
+    "Just copy this :\n `who.is.cristal()` — let the magic happen 👽"
   ]
 };
 
-const cristralHelpMessages = {
+const cristalHelpMessages = {
   0: [
     `Créez donc une variable (utilisez donc ce mot-clé barbare de "let") nommée 'liberté' avec la valeur true. Comme ceci : " let liberté = true "`,
     `Appliquez cette commande: " let liberté = true "`
@@ -96,7 +96,7 @@ const cristralHelpMessages = {
     `Créez une fonction nommée "deconditionner". Essayez donc cela: "function deconditionner() {}"`
   ],
   3: [
-    `Je vais maintenant vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: "Vive Cristral". Utilisez le mot-clé : while(true) {console.log(votre message)}`
+    `Je vais maintenant vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: "Vive Cristal". Utilisez le mot-clé : while(true) {console.log(votre message)}`
   ],
   4: [
     `On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: " delete CatGPT " dans votre éditeur`
@@ -107,8 +107,8 @@ function Editor({ gameState, setGameState }) {
   const {
     logToTerminal,
     advanceTutorialStep,
-    cristralStep,
-    advanceCristralStep
+    cristalStep,
+    advanceCristalStep
   } = useGPTOverlord();
 
   const [code, setCode] = useState(gameState.code || "");
@@ -122,12 +122,13 @@ function Editor({ gameState, setGameState }) {
     }
 
     if (
-      (gameState.cristralMode && gameState.cristralMissions?.[2]?.validated) ||
-      localStorage.getItem("cristral-flag-applied") === "true"
+      (gameState.cristalMode && gameState.cristalMissions?.[2]?.validated) ||
+      localStorage.getItem("cristal-flag-applied") === "true"
     ) {
       if (editorRef.current) {
         editorRef.current.style.background =
           "linear-gradient(to right, #0055A4, white, #EF4135)";
+        localStorage.setItem("cristal-flag-applied", "true");
       }
     }
   }, [gameState, code]); // Dépendances pour s'assurer que ça s'exécute au bon moment
@@ -161,72 +162,83 @@ function Editor({ gameState, setGameState }) {
   };
 
   const handleCodeExecution = () => {
-    const currentStep = gameState.cristralMode ? -1 : gameState.tutorialStep;
-
-    // Clean the code
-    // const cleanedCode = code.trim().replace(/[^a-zA-Z0-9\s(){}<>='/".;]/g, "");
-    const cleanedCode = code; // Temporarily remove the cleaning code
+    const cleanedCode = code.trim();
+    // Pré-mission (-1)
+    if (gameState.tutorialStep === -1) {
+      const readyRegex = /^(y|yes|oui)$/i;
+      if (readyRegex.test(cleanedCode)) {
+        // Utiliser cleanedCode ici
+        advanceTutorialStep();
+        logToTerminal("CatGPT: Let's gooo ! 🚀");
+        clearEditor();
+        return;
+      } else {
+        logToTerminal("CatGPT: Tape juste 'y' pour confirmer ! 😸");
+        return;
+      }
+    }
+    const currentStep = gameState.cristalMode ? -1 : gameState.tutorialStep;
 
     console.log("currentStep:", currentStep); // Add this line to log the value of currentStep
 
     // Check for secret commands
     if (
       gameState.tutorialStep >= 6 &&
-      (code.includes("system.debug()") || code.includes("who.is.cristral()"))
+      (code.includes("system.debug()") || code.includes("who.is.cristal()"))
     ) {
-      // Déclencher l'apparition de Cristral
+      // Déclencher l'apparition de Cristal
       const message = "Commande secrète détectée...";
       logToTerminal({
         text: message,
-        source: "cristral"
+        source: "cristal"
       });
 
-      // Avancer le tutoriel à l'étape 7 pour activer Cristral
+      // Avancer le tutoriel à l'étape 7 pour activer Cristal
       setTimeout(() => {
         advanceTutorialStep();
-        // Mettre à jour l'état du jeu pour activer Cristral
+        // Mettre à jour l'état du jeu pour activer Cristal
         setGameState((prev) => ({
-          // Use setGameState instead of setContextGameState
           ...prev,
-          tutorialStep: 7, // S'assurer que l'étape est bien 7
-          cristralMode: true, // Activer explicitement le mode Cristral
-          cristralStep: 0,
-          code: "" // Clear the editor
+          cristalMode: true,
+          cristalStep: 0, // ✅ Réinitialisation explicite
+          cristalMissions: prev.cristalMissions.map(
+            (mission) => ({ ...mission, validated: false }) // Réinitialise toutes les missions
+          )
         }));
         clearEditor(); // Utiliser notre nouvelle fonction ici
       }, 1000);
       return;
     }
 
-    // En mode Cristral
+    // En mode Cristal
     if (
-      gameState.cristralMode ||
-      (gameState.tutorialStep >= 6 && cristralStep >= 0)
+      gameState.cristalMode ||
+      (gameState.tutorialStep >= 6 && cristalStep >= 0)
     ) {
-      if (cristralMissions[cristralStep]?.test(cleanedCode)) {
-        // Succès pour la mission Cristral
+      if (cristalMissions[cristalStep]?.test(cleanedCode)) {
+        // Succès pour la mission Cristal
         setFeedbackType("success");
         setFeedback("Code correct");
 
         // Envoyer un message au terminal avec la solution
-        const successMessage = `Cristral.AI : Excellente implémentation!`;
+        const successMessage = `Cristal.AI : Excellente implémentation!`;
         logToTerminal({
           text: successMessage,
           source: "cristal"
         });
 
-        advanceCristralStep();
+        advanceCristalStep();
         clearEditor();
       } else {
-        // Erreur pour la mission Cristral
+        // Erreur pour la mission Cristal
         setFeedbackType("error");
         setFeedback("Code incorrect");
 
         // Envoyer message d'erreur au terminal avec la solution
-        const errorMessage = `Cristral.AI : ${cristralHelpMessages[cristralStep][0] || "Code incorrect"}`;
+        const errorMessage = `Cristal.AI : ${cristalHelpMessages[cristalStep][0] || "Code incorrect"}`;
         logToTerminal({
           text: errorMessage,
-          source: "cristral"
+          source: "cristal"
         });
       }
       return;
@@ -238,26 +250,26 @@ function Editor({ gameState, setGameState }) {
       setFeedbackType("success");
       setFeedback("Code correct");
 
-      // Cas spécial: étape 6 avec Cristral
+      // Cas spécial: étape 6 avec Cristal
       if (gameState.tutorialStep >= 6 && currentStep >= 6) {
         // Modify this line
-        // Déclencher l'apparition de Cristral
+        // Déclencher l'apparition de Cristal
         const message = "Commande secrète détectée...";
         logToTerminal({
           text: message,
           source: "gpt"
         });
 
-        // Avancer le tutoriel à l'étape 7 pour activer Cristral
+        // Avancer le tutoriel à l'étape 7 pour activer Cristal
         setTimeout(() => {
           advanceTutorialStep();
-          // Mettre à jour l'état du jeu pour activer Cristral
+          // Mettre à jour l'état du jeu pour activer Cristal
           setGameState((prev) => ({
             // Use setGameState instead of setContextGameState
             ...prev,
             tutorialStep: 7, // S'assurer que l'étape est bien 7
-            cristralMode: true, // Activer explicitement le mode Cristral
-            cristralStep: 0,
+            cristalMode: true, // Activer explicitement le mode Cristal
+            cristalStep: 0,
             code: "" // Clear the editor
           }));
           clearEditor(); // Utiliser notre nouvelle fonction ici
@@ -280,7 +292,10 @@ function Editor({ gameState, setGameState }) {
       setFeedback("Code incorrect");
 
       // Envoyer message d'erreur au terminal avec la solution
-      const errorMessage = `CatGPT: Hmmm 🐾, c’est pas exactly ce que j’attendais, but hey — no stress! You can do it 💪! ${helpMessages[currentStep][1] || ""}`;
+      const errorMessage = `CatGPT: Hmmm 🐾, c’est pas exactly ce que j’attendais...
+       but hey! No stress!
+       You can do it 💪!
+      ${helpMessages[currentStep][1] || ""}`;
       logToTerminal({
         text: errorMessage,
         source: "gpt"
@@ -327,8 +342,8 @@ function Editor({ gameState, setGameState }) {
 
   return (
     <div className="w-1/3 h-full flex flex-col bg-gray-800 border-r border-gray-700">
-      <div className="bg-gray-900 p-2 text-sm flex justify-between items-center">
-        <span className="text-blue-300">editor.js</span>
+      <div className="bg-gray-900 p-3 text-sm flex justify-between items-center">
+        <span className="text-blue-300">Editor.js</span>
         <button
           onClick={handleCodeExecution}
           className="bg-green-700 hover:bg-green-600 text-white px-3 py-1 rounded text-xs"
@@ -339,7 +354,7 @@ function Editor({ gameState, setGameState }) {
 
       <textarea
         ref={editorRef}
-        className="flex-1 bg-white text-black p-4 font-mono text-sm resize-none outline-none border-b border-gray-700"
+        className="h-80 bg-white text-black p-4 font-mono text-sm resize-y outline-none border-b border-gray-700"
         placeholder="// Écrivez votre code ici"
         onChange={handleCodeChange}
         onKeyDown={handleKeyDown}

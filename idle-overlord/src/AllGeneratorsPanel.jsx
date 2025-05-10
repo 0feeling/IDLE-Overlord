@@ -15,8 +15,6 @@ function AllGeneratorsPanel() {
         .filter((id) => generators[id].count > 0 || generators[id].unlocked)
         .map(Number)
     );
-
-    // Montre les générateurs déjà débloqués et les 3 suivants
     return genId <= highestUnlocked + 3;
   };
 
