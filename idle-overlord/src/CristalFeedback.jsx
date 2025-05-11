@@ -4,7 +4,7 @@ export default function CristalFeedback({ messages }) {
   return (
     <div className="text-blue-300 font-mono text-sm space-y-2">
       <div className="bg-gray-900 p-2 rounded-t border-b border-blue-700">
-        <span className="text-blue-400">⚜️ Cristal.AI — Terminal</span>
+        <span className="text-blue-400">⚜️ Cristal.ai — Aides</span>
       </div>
 
       <div className="overflow-y-auto max-h-[50vh] pr-2">

@@ -57,7 +57,7 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 const matchByStep = {
   0: /^m$|console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
 
-  1: /^m$|function\s+unlockButton\s*\(\s*\)\s*\{?/i,
+  1: /^m$|(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)(?=.*gradient)/i,
 
   2: /^m$|<button[^>]*>\s*inspiration\s*<\/button>/i,
 

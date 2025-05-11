@@ -52,39 +52,39 @@ export default function Terminal() {
     }
   }, [gameState.cristalMode, gameState.cristalStep, showCristal]);
 
-  // Mise à jour des missions Cristal
-  useEffect(() => {
-    if (
-      gameState.cristalMode &&
-      gameState.cristalStep > 0 &&
-      gameState.cristalStep < 5
-    ) {
-      const missionDescriptions = [
-        `Apprendre à créer une variable en Appliquant dans la console la commande : ' let freedom = true ' `,
-        `Pour modifier la couleur de fond de l’éditeur :
+  // Mise à jour des missions Cristal; laisser en commentaire à utiliser plus tard pour décrire une mission avant le help message
+  // useEffect(() => {
+  //   if (
+  //     gameState.cristalMode &&
+  //     gameState.cristalStep > 0 &&
+  //     gameState.cristalStep < 5
+  //   ) {
+  //     const missionDescriptions = [
+  //       `Apprendre à créer une variable en Appliquant dans la console la commande : ' let freedom = true ' `,
+  //       `Pour modifier la couleur de fond de l’éditeur :
 
-        1. Sélectionner l’élément de la page dont le nom est "editor" : 
-        ' document.querySelector('editor') '
+  //       1. Sélectionner l’élément de la page dont le nom est "editor" :
+  //       ' document.querySelector('editor') '
 
-        2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à : 
-        ' .style.background = '
+  //       2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à :
+  //       ' .style.background = '
 
-        3. Appliquer un dégradé horizontal avec : 
-        ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) ' 
-        
-        Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal: 
-        ' #0055A4, #FFFFFF, #EF4135 '`,
-        `Créez une fonction 'deconditionner'`,
-        "Apprendre à créer une boucle infinie",
-        "Faire le Bon choix"
-      ];
+  //       3. Appliquer un dégradé horizontal avec :
+  //       ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) '
 
-      setMessagesCristal((prev) => [
-        ...prev,
-        `Cristal.AI : Prochaine mission: ${missionDescriptions[gameState.cristalStep]}`
-      ]);
-    }
-  }, [gameState.cristalStep, gameState.cristalMode]);
+  //       Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal:
+  //       ' #0055A4, #FFFFFF, #EF4135 '`,
+  //       `Créez une fonction 'deconditionner'`,
+  //       "Apprendre à créer une boucle infinie",
+  //       "Faire le Bon choix"
+  //     ];
+
+  //     setMessagesCristal((prev) => [
+  //       ...prev,
+  //       `Cristal.AI : Prochaine mission: ${missionDescriptions[gameState.cristalStep]}`
+  //     ]);
+  //   }
+  // }, [gameState.cristalStep, gameState.cristalMode]);
 
   return (
     <div className="w-1/3 flex flex-col bg-gray-900 h-full border-r border-gray-800">
