@@ -56,7 +56,7 @@ const tutorialMissions = [
   }
 ];
 
-// Missions de Cristal
+// Instructions pour Missions de Cristal
 const cristalMissions = [
   {
     instruction: `Apprendre à créer une variable en appliquant dans la console la commande : ' let freedom = true ' `,

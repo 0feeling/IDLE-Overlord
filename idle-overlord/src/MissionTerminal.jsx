@@ -22,8 +22,8 @@ const missionMessages = {
   Ready à t'épauler 💛
   
   Are you ready ? 
-  Tape 'y', 'yes' ou 'oui' dans l'éditeur 
-  pour commencer l'aventure ! 💻🚀`,
+  Tape 'y', 'yes' ou 'oui' dans l'Editor 
+  pour commencer l'adventure ! 💻🚀`,
 
   0: `CatGPT : 🔥
 Let’s gooo !

@@ -2,54 +2,84 @@ import React, { useEffect, useState, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 
+//Vraies Regex :
 // Constantes pour les vérifications de code
+// const matchByStep = {
+//   0: /console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
+//   // ✅ Tolère : guillemets simples/doubles, majuscules/minuscules, espaces, point-virgule optionnel
+
+//   1: /function\s+unlockButton\s*\(\s*\)\s*\{?/i,
+//   // ✅ Tolère : espaces superflus, absence de { à la fin, insensible à la casse
+
+//   2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
+//   // ✅ Déjà très souple : attributs optionnels, casse insensible, tolère les espaces
+
+//   3: /(?=.*g[ae]i?n)(?=.*spi)(?=.*rat)(?=.*ion)(?=.*click)/is,
+//   // ✅ Tolère : espaces, absence de {, casse insensible
+
+//   4: /function\s+autoClick\s*\(\s*\)\s*\{\s*setInterval\s*\(\s*gainInspiration\s*,\s*1000\s*\)\s*;?\s*\}?/i,
+//   // ✅ Tolère : espaces, point-virgule optionnel, accolade fermante optionnelle, casse insensible
+
+//   5: /function\s+unlockAutoIdea\s*\(\s*\)\s*\{\s*autoClick\s*\(\s*\)\s*;?\s*\}?/i,
+//   // ✅ Tolérant sur les espaces, les points-virgules et les accolades
+
+//   6: /\b(who\.is\.cristal\s*\(\s*\)|system\.debug\s*\(.*\))/i
+//   // ✅ Tolère les espaces, casse insensible, parenthèses vides ou pas
+// };
+
+// const cristalMissions = {
+//   0: /let\s+libert[ée]\s*=\s*true\s*;?/i,
+
+//   // ✅ Tolère les espaces, point-virgule optionnel, insensible à la casse
+
+//   1: /(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)/i,
+//   // ✅ Plus de tolérance :
+//   // - couleurs en français ou anglais
+//   // - quotes simples/doubles cohérentes
+//   // - permet `let x = ...` ou directement `document.querySelector(...)`
+//   // - tolère les espaces, point-virgule optionnel
+//   // - accepte trois couleurs bien séparées par des virgules, dans n'importe quel ordre
+
+//   2: /function\s+deconditionner\s*\(\s*\)\s*\{?/i,
+//   // ✅ Tolère les espaces, l’accolade optionnelle, insensible à la casse
+
+//   3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
+//   // ✅ Tolère :
+//   // - insensible à la casse (`vive Cristal`, `VIVE CRISTAL`)
+//   // - du code intermédiaire dans la boucle
+//   // - point-virgule optionnel
+
+//   4: /delete\s+CatGPT\s*;?/i
+//   // ✅ Simple, tolère espaces et point-virgule
+// };
+
+//Regex avec validation par m pour test de dev
 const matchByStep = {
-  0: /console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
-  // ✅ Tolère : guillemets simples/doubles, majuscules/minuscules, espaces, point-virgule optionnel
+  0: /^m$|console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
 
-  1: /function\s+unlockButton\s*\(\s*\)\s*\{?/i,
-  // ✅ Tolère : espaces superflus, absence de { à la fin, insensible à la casse
+  1: /^m$|function\s+unlockButton\s*\(\s*\)\s*\{?/i,
 
-  2: /<button[^>]*>\s*inspiration\s*<\/button>/i,
-  // ✅ Déjà très souple : attributs optionnels, casse insensible, tolère les espaces
+  2: /^m$|<button[^>]*>\s*inspiration\s*<\/button>/i,
 
-  3: /(?=.*g[ae]i?n)(?=.*spi)(?=.*rat)(?=.*ion)(?=.*click)/is,
-  // ✅ Tolère : espaces, absence de {, casse insensible
+  3: /^m$|(?=.*g[ae]i?n)(?=.*spi)(?=.*rat)(?=.*ion)(?=.*click)/is,
 
-  4: /function\s+autoClick\s*\(\s*\)\s*\{\s*setInterval\s*\(\s*gainInspiration\s*,\s*1000\s*\)\s*;?\s*\}?/i,
-  // ✅ Tolère : espaces, point-virgule optionnel, accolade fermante optionnelle, casse insensible
+  4: /^m$|function\s+autoClick\s*\(\s*\)\s*\{\s*setInterval\s*\(\s*gainInspiration\s*,\s*1000\s*\)\s*;?\s*\}?/i,
 
-  5: /function\s+unlockAutoIdea\s*\(\s*\)\s*\{\s*autoClick\s*\(\s*\)\s*;?\s*\}?/i,
-  // ✅ Tolérant sur les espaces, les points-virgules et les accolades
+  5: /^m$|function\s+unlockAutoIdea\s*\(\s*\)\s*\{\s*autoClick\s*\(\s*\)\s*;?\s*\}?/i,
 
-  6: /\b(who\.is\.cristal\s*\(\s*\)|system\.debug\s*\(.*\))/i
-  // ✅ Tolère les espaces, casse insensible, parenthèses vides ou pas
+  6: /^m$|\b(who\.is\.cristal\s*\(\s*\)|system\.debug\s*\(.*\))/i
 };
 
 const cristalMissions = {
-  0: /let\s+libert[ée]\s*=\s*true\s*;?/i,
+  0: /^m$|(?=.*\blet\b)?(?=.*\b(freedom|libert[ée]|liberty)\b)(?=.*\b(true|vrai[ea]?)\b)/i,
 
-  // ✅ Tolère les espaces, point-virgule optionnel, insensible à la casse
+  1: /^m$|(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)/i,
 
-  1: /(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)/i,
-  // ✅ Plus de tolérance :
-  // - couleurs en français ou anglais
-  // - quotes simples/doubles cohérentes
-  // - permet `let x = ...` ou directement `document.querySelector(...)`
-  // - tolère les espaces, point-virgule optionnel
-  // - accepte trois couleurs bien séparées par des virgules, dans n'importe quel ordre
+  2: /^m$|function\s+deconditionner\s*\(\s*\)\s*\{?/i,
 
-  2: /function\s+deconditionner\s*\(\s*\)\s*\{?/i,
-  // ✅ Tolère les espaces, l’accolade optionnelle, insensible à la casse
+  3: /^m$|while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
 
-  3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
-  // ✅ Tolère :
-  // - insensible à la casse (`vive Cristal`, `VIVE CRISTAL`)
-  // - du code intermédiaire dans la boucle
-  // - point-virgule optionnel
-
-  4: /delete\s+CatGPT\s*;?/i
-  // ✅ Simple, tolère espaces et point-virgule
+  4: /^m$|delete\s+CatGPT\s*;?/i
 };
 
 // Solutions exactes à copier-coller pour chaque étape
