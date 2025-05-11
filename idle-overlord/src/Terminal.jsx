@@ -44,7 +44,7 @@ export default function Terminal() {
             "???? : Aaaah… Vous avez enfin tapé cette commande ?",
             "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de CatGPT et restons entre gens cultivés.",
             "UnknowAI : Je me présente, je suis Cristal, une IA 100% Française!",
-            "Cristal.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements ici ..."
+            "Cristal.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements esthétique ici ..."
           ]);
         }, 1000);
         return () => clearTimeout(timer);
@@ -60,9 +60,21 @@ export default function Terminal() {
       gameState.cristalStep < 5
     ) {
       const missionDescriptions = [
-        "Apprendre à créer une variable en Appliquant dans la console la commande : ' let freedom = true ' ",
-        "Apprendre à changer la background-color",
-        "Créez une fonction",
+        `Apprendre à créer une variable en Appliquant dans la console la commande : ' let freedom = true ' `,
+        `Pour modifier la couleur de fond de l’éditeur :
+
+        1. Sélectionner l’élément de la page dont le nom est "editor" : 
+        ' document.querySelector('editor') '
+
+        2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à : 
+        ' .style.background = '
+
+        3. Appliquer un dégradé horizontal avec : 
+        ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) ' 
+        
+        Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal: 
+        ' #0055A4, #FFFFFF, #EF4135 '`,
+        `Créez une fonction 'deconditionner'`,
         "Apprendre à créer une boucle infinie",
         "Faire le Bon choix"
       ];
@@ -78,8 +90,12 @@ export default function Terminal() {
     <div className="w-1/3 flex flex-col bg-gray-900 h-full border-r border-gray-800">
       {/* En-tête du terminal */}
       <div className="bg-gray-800 px-4 py-2 border-b border-gray-700">
-        <span className="text-green-400 font-mono text-sm tracking-wide">
-          {gameState.cristalMode ? "cristal_TERMINAL" : "CATGPT_TERMINAL"}
+        <span
+          className={`font-mono text-sm tracking-wide ${
+            gameState.cristalMode ? "text-blue-400" : "text-green-400"
+          }`}
+        >
+          {gameState.cristalMode ? "CRISTAL_TERMINAL" : "CATGPT_TERMINAL"}
         </span>
       </div>
 
@@ -111,7 +127,11 @@ export default function Terminal() {
       </div>
 
       {/* Barre de statut */}
-      <div className="bg-gray-800 px-4 py-2 text-xs text-green-400 font-mono border-t border-gray-700">
+      <div
+        className={`bg-gray-800 px-4 py-2 text-xs font-mono border-t border-gray-700 ${
+          gameState.cristalMode ? "text-blue-400" : "text-green-400"
+        }`}
+      >
         {gameState.cristalMode
           ? "STATUS: FRENCH_MODE_ACTIVATED"
           : `STEP: ${gameState.tutorialStep + 1}/7`}

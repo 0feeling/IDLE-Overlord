@@ -59,15 +59,26 @@ const tutorialMissions = [
 // Missions de Cristal
 const cristalMissions = [
   {
-    instruction: "Apprendre à créer une variable",
+    instruction: `Apprendre à créer une variable en appliquant dans la console la commande : ' let freedom = true ' `,
     validated: false
   },
   {
-    instruction:
-      "Apprendre à changer la background-color / couleur de fond d'un élément du DOM",
+    instruction: `Pour modifier la couleur de fond de l’éditeur :
+
+        1. Sélectionner l’élément de la page dont le nom est "editor" : 
+        ' document.querySelector('editor') '
+
+        2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à : 
+        ' .style.background = '
+
+        3. Appliquer un dégradé horizontal avec : 
+        ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) ' 
+        
+        Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal: 
+        ' #0055A4, #FFFFFF, #EF4135 '`,
     validated: false
   },
-  { instruction: "Créer une fonction 'deconditionner()'", validated: false },
+  { instruction: `Créer une fonction 'deconditionner()'`, validated: false },
   {
     instruction: "Apprendre a créer une boucle'",
     validated: false

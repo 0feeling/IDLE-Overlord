@@ -39,11 +39,13 @@ function MissionPanel() {
   // Modifier l'affichage de la mission actuelle :
   const currentMission =
     currentStep === -1
-      ? missions[0] // Étape -1 ➔ Affiche "Êtes-vous prêt à commencer l'aventure ?"
-      : (missions[gameState.cristalMode ? currentStep : currentStep] ?? {
-          instruction: "Liberté de code !",
-          validated: false
-        });
+      ? missions[0]
+      : gameState.cristalMode
+        ? missions[currentStep]
+        : (missions[currentStep + 1] ?? {
+            instruction: "Liberté de code !",
+            validated: false
+          });
 
   return (
     <div className="bg-gray-800 border-t border-gray-700 max-h-64 overflow-y-auto flex flex-col">

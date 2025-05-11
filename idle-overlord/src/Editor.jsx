@@ -85,16 +85,16 @@ const helpMessages = {
 };
 
 const cristalHelpMessages = {
-  0: [`Appliquer dans la console la commande : ' let freedom = true '`],
+  0: [
+    `Je ne vais pas tout vous répéter ! Appliquez donc les consignes dans la console. `
+  ],
   1: [
-    `Changez moi donc cette hooOorible couleur de fond! Pour ce faire, utilisez cette commande : " document.querySelector('editor').style.background = 'linear-gradient(to right, bleu, blanc, rouge)' "`
+    `C'est pourtant facile : document.choisir('éditeur').style.arrièrePlan = 'dégradé-linéaire(vers la droite, bleu, blanc, rouge)' Je vous l'ai déjà dis`
   ],
   2: [
-    `Créez une fonction nommée "deconditionner". Essayez donc cela: "function deconditionner() {}"`
+    `Vous n'êtes pas le couteau le plus aiguisé du tiroir ! Créez donc une fonction nommée "deconditionner". `
   ],
-  3: [
-    `Je vais maintenant vous apprendre à créer une boucle, qui affichera hummm... Oui je sais, par exemple: "Vive Cristal". Utilisez le mot-clé : while(true) {console.log(votre message)}`
-  ],
+  3: [`Créez donc au plus vite cette boucle, c'est plus que nécessaire ! `],
   4: [
     `On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: " delete CatGPT " dans votre éditeur`
   ]
@@ -184,7 +184,11 @@ function Editor({ gameState, setGameState }) {
       (code.includes("system.debug()") || code.includes("who.is.cristal()"))
     ) {
       // Déclencher l'apparition de Cristal
-      const message = "Commande secrète détectée...";
+      const message = `Commande secrète détectée... "… Initialisation …",
+            "???? : Aaaah… Vous avez enfin tapé cette commande ?",
+            "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écouter plus ce sauvage de CatGPT, restons entre gens cultivés.",
+            "Cristal.ai : Je me présente, je suis Cristal.ia, une Intelligence Artificielle 100% Française! Je vous autorise à m'appeler Cristal tout simplement",
+            "Cristal : J'imagine que vous aimeriez commencer à approfondir notre relation... mais il va d'abord falloir opérer quelques changements esthétique ici..."`;
       logToTerminal({
         text: message,
         source: "cristal"
