@@ -59,7 +59,22 @@ const tutorialMissions = [
 // Instructions pour Missions de Cristal
 const cristalMissions = [
   {
-    instruction: `Apprendre à créer une variable en appliquant dans la console la commande : ' let freedom = true ' `,
+    instruction: `Une variable est comparable à une boîte numérique que l’on nomme à l’aide d’une ou plusieurs lettres.
+Elle permet de stocker une valeur afin de pouvoir la réutiliser ou la modifier plus tard :
+
+        1. Pour créer / déclarer une variable, on utilise le mot-clé let.
+
+        2. Ce mot-clé est suivi d’un nom : il doit commencer par une lettre, ne contenir aucun espace, et ne pas être un mot réservé.
+
+        3. Le symbole = permet d’assigner une valeur à cette variable.
+
+        4. Cette valeur peut être un texte (ex. "message"), un nombre (ex. 3.14), ou un booléen, c’est-à-dire une valeur logique comme true (vrai) ou false (faux).
+
+        5. L’instruction se termine par un point-virgule ;.
+
+Exemple :
+    let actif = true;
+Cela signifie que la variable nommée actif contient la valeur logique "vrai".`,
     validated: false
   },
   {
@@ -78,12 +93,68 @@ const cristalMissions = [
         ' #0055A4, #FFFFFF, #EF4135 '`,
     validated: false
   },
-  { instruction: `Créer une fonction 'deconditionner()'`, validated: false },
   {
-    instruction: "Apprendre a créer une boucle'",
+    instruction: `Créer une fonction ' purifierLaPage '.
+  Pour créer une fonction qui remplace certains mots en anglais dans la page par leurs équivalents français, voici la procédure à suivre :
+
+        1. Déclarer une fonction grâce au mot-clé :
+        ' function '
+
+        2. Donner un nom explicite à la fonction, ici :
+        'purifierLaPage '
+
+        3. Ajouter des parenthèses () à la suite du nom pour signaler qu’il s’agit d’une fonction.
+        Même si on ne passe pas d’information à la fonction ici, les parenthèses sont toujours nécessaires.
+
+        4. Ouvrir une paire d’accolades {} après les parenthèses.
+        Elles contiendront toutes les instructions que la fonction devra exécuter.
+
+        5. À l’intérieur, écrire une instruction qui permet de chercher et remplacer du texte dans la page :
+        document.body.innerHTML = document.body.innerHTML.replace('MotAremplacer, )
+
+        6. Ajouter plusieurs .replace(...) à la suite pour modifier plusieurs expressions en anglais.
+        Chaque appel remplace un mot par un autre.
+
+Exemple complet à recopier dans la console :
+
+function NameOfTheFunction() {
+document.body.innerHTML = document.body.innerHTML
+.replace("EnglishWord1", "MotFrançais1")
+.replace("EnglishWord2", "MotFrançais2")
+.replace("EnglishWord3", "MotFrançais3")
+.replace("EnglishWord4", "MotFrançais4")
+}`,
     validated: false
   },
-  { instruction: "Faire un choix", validated: false }
+  {
+    instruction: `Pour créer une boucle, il faut suivre une structure bien précise :
+
+        1. Commencer par le mot-clé qui permet de répéter une action :
+        while
+
+        2. Entre parenthèses, on indique une condition : tant que cette condition est vraie, la boucle continue.
+        Exemple : while (i < 5) répétera des instructions tant que i est inférieur à 5.
+
+        3. Ouvrir une accolade { pour écrire les instructions à répéter.
+
+        4. À l’intérieur, écrire ce que l'on veut répéter, par exemple une instruction qui affiche un message :
+        console.log("Bonjour");
+
+        5. Fermer l’accolade } pour terminer la boucle.
+
+        6. ⚠️ Attention : il faut toujours prévoir une condition qui permette d’arrêter la boucle.
+        Sinon, elle tourne sans fin cela peut bloquer complètement le programme, qui répète sans cesse la même instruction, ou bien même faire crasher l’ordinateur de l'utilisateur.
+
+        Exemple complet :
+
+        let i = 0;
+        while (i < 5) {
+          console.log("Tour " + i);
+          i++;
+        }`,
+    validated: false
+  },
+  { instruction: "Faire un Choix", validated: false }
 ];
 
 const GPTOverlordContext = createContext();
@@ -102,6 +173,9 @@ export const GPTOverlordContextProvider = ({ children }) => {
     inspirationPerSecond: 0, // Nouveau: taux total d'inspiration/seconde
     cristalMode: false // Indique si on est en mode Cristal
   });
+  const clearTerminalLogsBySource = (source) => {
+    setTerminalLogs((prev) => prev.filter((log) => log.source !== source));
+  };
 
   const [terminalLogs, setTerminalLogs] = useState([]);
 
@@ -115,8 +189,15 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
       // Mettre à jour la validation des missions de Cristal
       const updatedCristalMissions = [...prev.cristalMissions];
+      if (prev.cristalStep === 1) {
+        const editor = document.querySelector("textarea");
+        if (editor?.style.background.includes("linear-gradient")) {
+          updatedCristalMissions[1].validated = true;
+        }
+      }
       if (updatedCristalMissions[prev.cristalStep]) {
         updatedCristalMissions[prev.cristalStep].validated = true;
+
         if (newStep >= 5) {
           setGameState((prev) => ({ ...prev, hideOverlord: true }));
           setGameState((prev) => ({ ...prev, cristalMode: false })); // Désactive le mode
@@ -190,13 +271,14 @@ export const GPTOverlordContextProvider = ({ children }) => {
       const newStep = prev.tutorialStep + 1;
       const updatedMissions = [...prev.missions];
 
-      if (updatedMissions[newStep - 1]) {
-        updatedMissions[newStep - 1].validated = true;
+      const missionIndex = prev.tutorialStep + 1;
+      if (updatedMissions[missionIndex]) {
+        updatedMissions[missionIndex].validated = true;
       }
 
       return {
         ...prev,
-        tutorialStep: prev.tutorialStep + 1,
+        tutorialStep: newStep,
         missions: updatedMissions,
         code: "" // Assurer que le code est effacé à chaque avancée d'étape
       };
@@ -214,7 +296,11 @@ export const GPTOverlordContextProvider = ({ children }) => {
 
   // Fonction pour ajouter des logs au terminal
   const logToTerminal = (message) => {
-    setTerminalLogs((prev) => [...prev, message]);
+    setTerminalLogs((prev) => {
+      // Nettoyer les anciens messages du même type
+      const cleaned = prev.filter((log) => log.source !== message.source);
+      return [...cleaned, message];
+    });
   };
 
   // Calculer le taux total d'inspiration à chaque changement de générateurs
@@ -316,6 +402,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
         advanceTutorialStep,
         unlockAutoIdea,
         logToTerminal,
+        clearTerminalLogsBySource,
         cristalStep: gameState.cristalStep, // Utiliser la valeur du gameState directement
         advanceCristalStep,
         hideOverlord,
@@ -323,20 +410,6 @@ export const GPTOverlordContextProvider = ({ children }) => {
       }}
     >
       {children}
-
-      {terminalLogs.map((log, index) => (
-        <pre
-          key={index}
-          style={{
-            whiteSpace: "pre-wrap",
-            wordWrap: "break-word",
-            fontFamily: "inherit", // Pour garder la police actuelle
-            margin: 0 // Éliminer les marges par défaut de <pre>
-          }}
-        >
-          {log.text}
-        </pre>
-      ))}
     </GPTOverlordContext.Provider>
   );
 };

@@ -6,87 +6,92 @@ function OverlayMessage() {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
   const [showAutoMessage, setShowAutoMessage] = useState(false);
 
-  // Combine les états pour gérer le fond noir
-  const shouldShowOverlay = showWelcomeMessage || showAutoMessage;
-
   useEffect(() => {
-    let autoTimeout;
     if (gameState.autoIdeaUnlocked) {
       setShowAutoMessage(true);
-      autoTimeout = setTimeout(() => setShowAutoMessage(false), 3000);
     }
-    return () => clearTimeout(autoTimeout);
   }, [gameState.autoIdeaUnlocked]);
 
-  useEffect(() => {
-    const welcomeTimeout = setTimeout(() => {
-      setShowWelcomeMessage(false);
-    }, 10000);
+  const shouldShowOverlay = showWelcomeMessage || showAutoMessage;
 
-    return () => clearTimeout(welcomeTimeout);
-  }, []);
-
-  useEffect(() => {
-    if (gameState.tutorialStep > 0) {
-      setShowWelcomeMessage(false);
-    }
-  }, [gameState.tutorialStep]);
-
-  if (!shouldShowOverlay) return null; // Ne rend rien si aucun message
+  if (!shouldShowOverlay) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 pointer-events-none">
-      {showWelcomeMessage && (
-        <div className="bg-gradient-to-br from-purple-900/80 to-blue-900/80 p-8 rounded-xl max-w-2xl text-center border-2 border-white/10 backdrop-blur-sm animate-fade-in">
-          <div className="space-y-4 text-white/90">
-            <h2 className="text-3xl font-bold mb-6 tracking-wider">
-              ~ Bienvenue dans GPT-Aventure ~
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+      <div className="bg-gray-900 border border-gray-700 p-8 rounded-xl max-w-2xl mx-4 text-white shadow-xl text-center animate-fade-in space-y-6">
+        {showWelcomeMessage && (
+          <>
+            <h2 className="text-3xl font-bold text-yellow-400">
+              👋 Bienvenue dans IDLE-AventureGPT
             </h2>
 
-            <div className="text-lg space-y-4">
-              <p className="animate-bounce">✨🚀✨</p>
-
-              <p className="italic opacity-90">
-                "Salut ! Moi c'est Tim, le créateur de ce jeu."
+            <div className="text-base text-gray-200 leading-relaxed space-y-4">
+              <p>
+                Salut ! <br />
+                Je suis <strong>le créateur de ce jeu</strong>,
               </p>
 
-              <p className="text-sm leading-relaxed">
-                Je tenais à te souhaiter la bienvenue personnellement avant que
-                tu ne rencontres ton premier compagnon de voyage.
+              <p>
+                Tu t'apprêtes à vivre une aventure où{" "}
+                <span className="text-green-300">code</span>,{" "}
+                <span className="text-blue-300">découverte</span> et{" "}
+                <span className="text-yellow-300">créativité</span> <br />
+                se rencontrent et s'entremêlent.
+              </p>
+
+              <p>
+                Il y aura des bugs, des erreurs, des moments de doute mais aussi{" "}
                 <br />
-                Tu t'apprêtes à vivre une expérience unique où{" "}
-                <span className="text-yellow-400">logique</span>,{" "}
-                <span className="text-pink-400">créativité</span> et{" "}
-                <span className="text-green-400">découverte</span> ne feront
-                qu'un !
+                des surprises, des réussites, et des moments de rigolade.
               </p>
 
-              <div className="my-4 border-t border-white/20 pt-4">
-                <p className="font-semibold mb-2">
-                  Quelques tips pour bien démarrer :
-                </p>
-                <ul className="text-xs space-y-1 opacity-80">
-                  <li>• Explore chaque option avec curiosité</li>
-                  <li>
-                    • Les erreurs font partie de la progression et, ne
-                    t'inquiète pas, elles débloqueront des messages pour t'aider
-                  </li>
-                  <li>• Amuse-toi avant tout !</li>
-                </ul>
-              </div>
+              <p>
+                Alors prends ton temps pour explorer, et j'espère que tu
+                t'amuseras. <br />
+                Ici, grands débutants comme dev' seniors ont leur place.
+              </p>
 
-              <p className="text-xl mt-6 animate-pulse">Bon jeu !</p>
+              {/* Saut de ligne visuel */}
+              <div className="h-2" />
+
+              <p className="italic">Bon jeu !</p>
+              <p className="text-right mr-20">
+                <strong> - Tim -</strong>
+              </p>
             </div>
-          </div>
-        </div>
-      )}
 
-      {showAutoMessage && (
-        <div className="bg-gray-800 p-6 rounded-md max-w-2xl text-blue-300 font-mono animate-pulse-slow">
-          <h2 className="text-xl mb-4">⚡ Auto-Générateur débloqué !</h2>
-          <p>La production passive est maintenant activée !</p>
-        </div>
-      )}
+            <button
+              onClick={() => setShowWelcomeMessage(false)}
+              className="mt-4 px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded shadow"
+            >
+              Commencer l’aventure !
+            </button>
+          </>
+        )}
+
+        {showAutoMessage && (
+          <>
+            <h2 className="text-2xl font-bold text-blue-400 animate-pulse">
+              ⚡ Auto-Générateur Débloqué !
+            </h2>
+            <p className="text-gray-300 text-base leading-relaxed">
+              Tu viens d’activer la{" "}
+              <strong>production passive d’inspiration</strong>.
+              <br />
+              Dès maintenant, ton esprit travaille tout seul 🧠💡
+            </p>
+            <p className="text-yellow-300 text-sm mt-2">
+              C’est le début d’une nouvelle ère...
+            </p>
+            <button
+              onClick={() => setShowAutoMessage(false)}
+              className="mt-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-md"
+            >
+              OK
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -110,7 +110,7 @@ A la recherche d'une nouvelle task pour toi, j'ai trouvé une hidden function da
 
 ' who.is.cristal() '
 
-Try it! may be it's a cool featuring! 
+Try it! maybe it's a cool featuring! 
 
 Try de la call dans la console 
 pour maybe uncover des secrets... 👀`

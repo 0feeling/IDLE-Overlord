@@ -44,7 +44,7 @@ export default function Terminal() {
             "???? : Aaaah… Vous avez enfin tapé cette commande ?",
             "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus cet Amerloque de CatGPT et restons entre gens cultivés.",
             "UnknowAI : Je me présente, je suis Cristal, une IA 100% Française!",
-            "Cristal.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements esthétique ici ..."
+            "Cristal.AI : J'imagine que vous aimeriez commencer à approfondir notre relation mais il va d'abord falloir opérer quelques changements esthétiques ici ..."
           ]);
         }, 1000);
         return () => clearTimeout(timer);
@@ -133,7 +133,7 @@ export default function Terminal() {
         }`}
       >
         {gameState.cristalMode
-          ? "STATUS: FRENCH_MODE_ACTIVATED"
+          ? "STEP: FRENCH_MODE_ACTIVATED"
           : `STEP: ${gameState.tutorialStep + 1}/7`}
       </div>
     </div>

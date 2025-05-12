@@ -40,8 +40,9 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 //   // - tolère les espaces, point-virgule optionnel
 //   // - accepte trois couleurs bien séparées par des virgules, dans n'importe quel ordre
 
-//   2: /function\s+deconditionner\s*\(\s*\)\s*\{?/i,
-//   // ✅ Tolère les espaces, l’accolade optionnelle, insensible à la casse
+//   2: /function\s*purifierLaPage\s*\(\s*\)\s*\{(?=[\s\S]*?\.replace\s*\(\s*"AutoIdea\s*:\s*(?:locked|unlocked)"\s*,\s*[^)]*\))(?=[\s\S]*?\.replace\s*\(\s*"Current\s*mission"\s*,\s*[^)]*\))(?=[\s\S]*?\.replace\s*\(\s*"Per\s*second"\s*,\s*"Par\s*seconde"\s*\))[\s\S]*?\}/i
+
+//   // ✅ Tolère les espaces, insensible à la casse, 3 replace minimum
 
 //   3: /while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
 //   // ✅ Tolère :
@@ -57,7 +58,7 @@ import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
 const matchByStep = {
   0: /^m$|console\.log\s*\(\s*(['"])[\s!]*hello[\s-]?world!?[\s!]*\1\s*\)\s*;?/i,
 
-  1: /^m$|(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)(?=.*gradient)/i,
+  1: /^m$|function\s+unlockButton\s*\(\s*\)\s*\{?/i,
 
   2: /^m$|<button[^>]*>\s*inspiration\s*<\/button>/i,
 
@@ -73,9 +74,9 @@ const matchByStep = {
 const cristalMissions = {
   0: /^m$|(?=.*\blet\b)?(?=.*\b(freedom|libert[ée]|liberty)\b)(?=.*\b(true|vrai[ea]?)\b)/i,
 
-  1: /^m$|(?=.*\b(textarea|editor)\b)(?=.*\b(bleu|blue|#0055A4|#00f|#0000ff)\b)(?=.*\b(blanc|white|#fff|#ffffff)\b)(?=.*\b(rouge|red|#EF4135|#f00|#ff0000)\b)/i,
+  1: /^m$|(?=.*\b(textarea|editor)\b)(?=.*(bleu|blue|#0055A4|#00f|#0000ff))(?=.*(blanc|white|#fff|#ffffff))(?=.*(rouge|red|#EF4135|#f00|#ff0000))/i,
 
-  2: /^m$|function\s+deconditionner\s*\(\s*\)\s*\{?/i,
+  2: /^m$|function\s*purifierLaPage\s*\(\s*\)\s*\{(?=[\s\S]*?\.replace\s*\(\s*"AutoIdea\s*:\s*(?:locked|unlocked)"\s*,\s*[^)]*\))(?=[\s\S]*?\.replace\s*\(\s*"Current\s*mission"\s*,\s*[^)]*\))(?=[\s\S]*?\.replace\s*\(\s*"Per\s*second"\s*,\s*"Par\s*seconde"\s*\))[\s\S]*?\}/i,
 
   3: /^m$|while\s*\(\s*true\s*\)\s*\{[^}]*console\.log\s*\(\s*(['"])\s*vive\s+cristal\s*\1\s*\)\s*;?[^}]*\}/i,
 
@@ -116,18 +117,22 @@ const helpMessages = {
 
 const cristalHelpMessages = {
   0: [
-    `Je ne vais pas tout vous répéter ! Appliquez donc les consignes dans la console. `
+    `Vous commencez très mal ! Appliquez donc les instructions dans la console. `
   ],
   1: [
     `C'est pourtant facile : document.choisir('éditeur').style.arrièrePlan = 'dégradé-linéaire(vers la droite, bleu, blanc, rouge)' Je vous l'ai déjà dis`
   ],
   2: [
-    `Vous n'êtes pas le couteau le plus aiguisé du tiroir ! Créez donc une fonction nommée "deconditionner". `
+    `Vous n'êtes pas le couteau le plus aiguisé du tiroir ! Créez donc une fonction sur ce modèle : function NameOfTheFunction() {
+document.corps.interieurHTML = document.corps.interieurHTML
+.remplace("EnglishWord1", "MotFrançais1")
+.remplace("EnglishWord2", "MotFrançais2")
+.remplace("EnglishWord3", "MotFrançais3")
+.remplace("EnglishWord4", "MotFrançais4")
+}. `
   ],
-  3: [`Créez donc au plus vite cette boucle, c'est plus que nécessaire ! `],
-  4: [
-    `On va s'occuper de l'autre imbécile maintenant. Ecrivez donc: " delete CatGPT " dans votre éditeur`
-  ]
+  3: [`Créez donc au plus vite cette Boucle, c'est plus que nécessaire ! `],
+  4: [`N'hésitez pas ! Ecrivez donc: " delete CatGPT " dans votre éditeur`]
 };
 
 function Editor({ gameState, setGameState }) {
@@ -216,9 +221,9 @@ function Editor({ gameState, setGameState }) {
       // Déclencher l'apparition de Cristal
       const message = `Commande secrète détectée... "… Initialisation …",
             "???? : Aaaah… Vous avez enfin tapé cette commande ?",
-            "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écouter plus ce sauvage de CatGPT, restons entre gens cultivés.",
+            "UnknowAI : Voilà une personne de bon goût ! Maintenant n'écoutez plus ce sauvage de CatGPT, restons entre gens cultivés.",
             "Cristal.ai : Je me présente, je suis Cristal.ia, une Intelligence Artificielle 100% Française! Je vous autorise à m'appeler Cristal tout simplement",
-            "Cristal : J'imagine que vous aimeriez commencer à approfondir notre relation... mais il va d'abord falloir opérer quelques changements esthétique ici..."`;
+            "Cristal : J'imagine que vous aimeriez commencer à approfondir notre relation... mais il va d'abord falloir opérer quelques changements esthétiques ici..."`;
       logToTerminal({
         text: message,
         source: "cristal"
@@ -372,7 +377,7 @@ function Editor({ gameState, setGameState }) {
   }, [gameState.tutorialStep]);
 
   return (
-    <div className="w-1/3 h-full flex flex-col bg-gray-800 border-r border-gray-700">
+    <div className="flex flex-col bg-gray-800 border-r border-gray-700 h-full">
       <div className="bg-gray-900 p-3 text-sm flex justify-between items-center">
         <span className="text-blue-300">Editor.js</span>
         <button

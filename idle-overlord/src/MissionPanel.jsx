@@ -2,7 +2,6 @@ import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import { CheckCircle, Circle } from "lucide-react";
 
-// Composant mémoïsé pour les missions individuelles
 const MissionItem = React.memo(({ mission }) => (
   <div className="flex items-start gap-3 py-1 opacity-80 hover:opacity-100 transition-opacity">
     <div className="mt-0.5">
@@ -13,9 +12,7 @@ const MissionItem = React.memo(({ mission }) => (
       )}
     </div>
     <p
-      className={`text-xs leading-snug ${
-        mission.validated ? "text-green-400 line-through" : "text-gray-300"
-      }`}
+      className={`text-xs leading-snug break-words ${mission.validated ? "text-green-400 line-through" : "text-gray-300"}`}
     >
       {mission.instruction}
     </p>
@@ -25,18 +22,14 @@ const MissionItem = React.memo(({ mission }) => (
 function MissionPanel() {
   const { gameState } = useGPTOverlord();
 
-  // Déterminer quelle liste de missions utiliser
   const missions = gameState.cristalMode
     ? gameState.cristalMissions
     : gameState.missions;
 
-  // Déterminer l'étape actuelle
   const currentStep = gameState.cristalMode
     ? gameState.cristalStep
     : gameState.tutorialStep;
 
-  // Mission actuelle avec fallback
-  // Modifier l'affichage de la mission actuelle :
   const currentMission =
     currentStep === -1
       ? missions[0]
@@ -48,14 +41,14 @@ function MissionPanel() {
           });
 
   return (
-    <div className="bg-gray-800 border-t border-gray-700 max-h-64 overflow-y-auto flex flex-col">
-      {/* En-tête de la mission actuelle */}
-      <div className="bg-gray-900 p-3 border-b border-gray-700 sticky top-0">
+    <div className="bg-gray-800 border-t border-gray-700 h-64 md:h-72 lg:h-80 flex flex-col">
+      {/* En-tête fixe */}
+      <div className="bg-gray-900 p-3 border-b border-gray-700 top-0 z-10">
         <h2 className="text-blue-300 text-xs uppercase tracking-wide font-semibold mb-1 flex items-center">
           <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 animate-pulse"></span>
           {gameState.cristalMode ? "Mission Actuelle" : "Current Mission"}
         </h2>
-        <div className="flex items-start gap-3 py-1">
+        <div className="flex items-start gap-3">
           <div className="mt-0.5">
             {currentMission.validated ? (
               <CheckCircle className="text-green-400" size={18} />
@@ -64,7 +57,7 @@ function MissionPanel() {
             )}
           </div>
           <p
-            className={`text-sm leading-snug ${
+            className={`text-sm leading-snug break-words ${
               currentMission.validated ? "text-green-400" : "text-white"
             }`}
           >
@@ -73,17 +66,22 @@ function MissionPanel() {
         </div>
       </div>
 
-      {/* Liste des missions précédentes */}
-      <div className="p-3">
-        <h3 className="text-gray-400 text-xs uppercase tracking-wide font-semibold mb-2">
-          Progression
-        </h3>
-        <div className="space-y-2">
-          {missions.map((mission, index) =>
-            index >= currentStep ? null : (
-              <MissionItem key={index} mission={mission} />
-            )
-          )}
+      {/* Liste avec scroll interne */}
+      <div className="flex-1 overflow-hidden relative">
+        <div className="absolute inset-0 flex flex-col">
+          <h3 className="text-gray-400 text-xs uppercase tracking-wide font-semibold mb-2 px-3 pt-3 bg-gray-800 sticky top-0">
+            Progression
+          </h3>
+          <div className="flex-1 overflow-y-auto px-3 pb-3">
+            <div className="space-y-2">
+              {missions.map(
+                (mission, index) =>
+                  index <= currentStep && (
+                    <MissionItem key={index} mission={mission} />
+                  )
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
