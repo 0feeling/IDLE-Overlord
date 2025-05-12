@@ -106,7 +106,7 @@ factory à idées non-stop 💭`,
 
   6: `CatGPT : 🕵️
 A la recherche d'une nouvelle task pour toi, j'ai trouvé une hidden function dans les files du system...
-ça dit que si tu parles French tu devrais write:
+This dit que si tu parles French tu devrais write:
 
 ' who.is.cristal() '
 

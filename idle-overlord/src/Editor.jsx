@@ -149,18 +149,22 @@ const handleError = (message, source, logToTerminal) => {
   logToTerminal({ text: message, source });
 };
 
-function Editor({ gameState, setGameState }) {
+function Editor() {
   const {
+    gameState,
+    setGameState,
     logToTerminal,
     advanceTutorialStep,
     cristalStep,
     advanceCristalStep
   } = useGPTOverlord();
 
-  const [code, setCode] = useState(gameState.code || "");
+  // Ajoutez ces 3 lignes manquantes
   const [feedback, setFeedback] = useState("");
   const [feedbackType, setFeedbackType] = useState("info");
   const editorRef = useRef(null);
+
+  const [code, setCode] = useState(gameState.code || "");
 
   useEffect(() => {
     if (gameState.code !== code) {
@@ -321,9 +325,10 @@ function Editor({ gameState, setGameState }) {
   }, [gameState.tutorialStep]);
 
   return (
-    <div className="flex flex-col bg-gray-800 border-r border-gray-700 h-full">
-      <div className="bg-gray-900 p-3 text-sm flex justify-between items-center">
-        <span className="text-blue-300">Editor.js</span>
+    <div className="flex flex-col bg-gray-800 border-r border-gray-700 h-[400px]">
+      {/* En-tête */}
+      <div className="bg-gray-900 p-2 flex justify-between items-center border-b border-gray-700">
+        <span className="text-blue-300 text-sm">Editor.js</span>
         <button
           onClick={handleCodeExecution}
           className="bg-green-700 hover:bg-green-600 text-white px-3 py-1 rounded text-xs"
@@ -332,31 +337,27 @@ function Editor({ gameState, setGameState }) {
         </button>
       </div>
 
-      <textarea
-        ref={editorRef}
-        className="h-80 bg-white text-black p-4 font-mono text-sm resize-y outline-none border-b border-gray-700"
-        placeholder="// Écrivez votre code ici"
-        onChange={handleCodeChange}
-        onKeyDown={handleKeyDown}
-        spellCheck="false"
-        value={code}
-      />
+      {/* Conteneur principal éditeur + feedback */}
+      <div className="flex-1 flex flex-col relative">
+        <textarea
+          ref={editorRef}
+          className="flex-1 bg-white text-black p-4 font-mono resize-none outline-none"
+          placeholder="// Écrivez votre code ici"
+          onChange={handleCodeChange}
+          onKeyDown={handleKeyDown}
+          spellCheck="false"
+          value={code}
+        />
 
-      {feedback && (
-        <div
-          className={`p-3 text-sm font-mono overflow-auto max-h-40 ${
-            feedbackType === "error"
-              ? "bg-red-900 text-red-200"
-              : feedbackType === "success"
-                ? "bg-green-900 text-green-200"
-                : "bg-gray-900 text-blue-200"
-          }`}
-        >
-          {feedback}
-        </div>
-      )}
-
-      <MissionPanel />
+        {/* Console de feedback */}
+        {feedback && (
+          <div
+            className={`p-2 text-sm border-t border-gray-700 ${feedbackType === "error" ? "bg-red-900" : "bg-green-900"}`}
+          >
+            {feedback}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

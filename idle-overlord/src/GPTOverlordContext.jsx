@@ -98,10 +98,20 @@ export const GPTOverlordContextProvider = ({ children }) => {
     missions: tutorialMissions,
     cristalMissions: cristalMissions,
     inspirationPerSecond: 0, // Nouveau: taux total d'inspiration/seconde
-    cristalMode: false // Indique si on est en mode Cristal
+    stepLogs: [],
+    cristalMode: false, // Indique si on est en mode Cristal
+    codeHistory: ""
   });
+
   const clearTerminalLogsBySource = (source) => {
     setTerminalLogs((prev) => prev.filter((log) => log.source !== source));
+  };
+
+  const addDevLog = (message) => {
+    setGameState((prev) => ({
+      ...prev,
+      stepLogs: [...prev.stepLogs, message]
+    }));
   };
 
   const [terminalLogs, setTerminalLogs] = useState([]);
@@ -126,8 +136,11 @@ export const GPTOverlordContextProvider = ({ children }) => {
         updatedCristalMissions[prev.cristalStep].validated = true;
 
         if (newStep >= 5) {
-          setGameState((prev) => ({ ...prev, hideOverlord: true }));
-          setGameState((prev) => ({ ...prev, cristalMode: false })); // Désactive le mode
+          setGameState((prev) => ({
+            ...prev,
+            hideOverlord: true,
+            cristalMode: false
+          }));
         }
       }
 
@@ -198,17 +211,20 @@ export const GPTOverlordContextProvider = ({ children }) => {
       const newStep = prev.tutorialStep + 1;
       const updatedMissions = [...prev.missions];
 
-      const missionIndex = prev.tutorialStep + 1;
-      if (updatedMissions[missionIndex]) {
-        updatedMissions[missionIndex].validated = true;
-      }
+      // Valider la mission actuelle
+      if (updatedMissions[newStep]) {
+        updatedMissions[newStep].validated = true;
 
-      return {
-        ...prev,
-        tutorialStep: newStep,
-        missions: updatedMissions,
-        code: "" // Assurer que le code est effacé à chaque avancée d'étape
-      };
+        return {
+          ...prev,
+          tutorialStep: newStep,
+          missions: updatedMissions,
+          stepLogs: [],
+          codeHistory: prev.codeHistory + "\n" + prev.code,
+          code: ""
+        };
+      }
+      return prev;
     });
   };
 
@@ -217,7 +233,13 @@ export const GPTOverlordContextProvider = ({ children }) => {
     setGameState((prev) => ({
       ...prev,
       autoIdeaUnlocked: true,
-      tutorialStep: Math.min(prev.tutorialStep + 1, 6) // Reste à l'étape 6 (max)
+      tutorialStep: Math.min(prev.tutorialStep + 1, 6), // Reste à l'étape 6 (max)
+      codeHistory:
+        prev.codeHistory +
+        "\n// Auto-idée débloquée!\n" +
+        "function autoClick() {\n" +
+        "  setInterval(gainInspiration, 1000);\n" +
+        "}"
     }));
   };
 
@@ -333,7 +355,8 @@ export const GPTOverlordContextProvider = ({ children }) => {
         cristalStep: gameState.cristalStep, // Utiliser la valeur du gameState directement
         advanceCristalStep,
         hideOverlord,
-        buyGenerator
+        buyGenerator,
+        addDevLog
       }}
     >
       {children}

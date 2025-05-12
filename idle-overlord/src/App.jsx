@@ -1,6 +1,5 @@
 import React from "react";
 import "./index.css";
-import Terminal from "./Terminal";
 import Editor from "./Editor";
 import StatsBar from "./StatsBar";
 import OverlayMessage from "./OverlayMessage";
@@ -15,6 +14,7 @@ import AllGeneratorsPanel from "./AllGeneratorsPanel";
 import CristalTerminal from "./CristalTerminal";
 import CatGPTTerminal from "./CatGPTTerminal";
 import MissionPanel from "./MissionPanel";
+import CodeConsole from "./CodeConsole";
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
 }
 
 function AppContent() {
-  const { gameState, setGameState } = useGPTOverlord();
+  const { gameState } = useGPTOverlord();
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col px-2 sm:px-4">
@@ -34,28 +34,34 @@ function AppContent() {
       <InspirationButton />
       <UnlockAutoIdeaButton />
 
-      {/* Conteneur principal responsive */}
-      <div className="flex flex-1 flex-col lg:flex-row">
+      <div className="flex-1 flex flex-col lg:flex-row gap-2 mt-2">
         {/* Colonne gauche - Terminaux */}
-        <div className="lg:w-1/3 w-full flex flex-col border-b lg:border-b-0 lg:border-r border-gray-700">
-          <div className="flex-1 border-b border-gray-700 max-h-[50vh] overflow-y-auto">
+        <div className="lg:w-1/3 flex flex-col border border-gray-700 rounded-lg overflow-hidden">
+          <div className="flex-1">
             <CatGPTTerminal />
           </div>
-          <div className="flex-1 max-h-[50vh] overflow-y-auto">
+          <div className="flex-1 border-t border-gray-700">
             {gameState.cristalMode && <CristalTerminal />}
           </div>
         </div>
 
-        {/* Colonne centrale - Éditeur + Missions */}
-        <div className="lg:w-1/3 w-full flex flex-col border-b lg:border-b-0 lg:border-r border-gray-700">
-          <div className="flex-1 min-h-0 overflow-y-auto">
-            <Editor gameState={gameState} setGameState={setGameState} />
+        {/* Colonne centrale - Éditeur + Console */}
+        {/* Colonne centrale - Éditeur + Console */}
+        <div className="lg:w-1/3 flex flex-col">
+          <div className="flex-1 border border-gray-700 rounded-lg overflow-hidden">
+            <Editor /> {/* Suppression des props */}
+          </div>
+          <div className="h-[500px] border border-gray-700 rounded-lg mt-2">
+            <CodeConsole />
           </div>
         </div>
 
-        {/* Colonne droite - Générateurs */}
-        <div className="lg:w-1/3 w-full overflow-y-auto">
-          <AllGeneratorsPanel />
+        {/* Colonne droite - Mission + Générateurs */}
+        <div className="lg:w-1/3 flex flex-col border border-gray-700 rounded-lg overflow-hidden">
+          <MissionPanel />
+          <div className="flex-1 min-h-[300px] max-h-[70vh] overflow-y-auto scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600">
+            <AllGeneratorsPanel />
+          </div>
         </div>
       </div>
 
