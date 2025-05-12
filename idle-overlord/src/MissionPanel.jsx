@@ -59,7 +59,7 @@ function MissionPanel() {
           <p
             className={`text-sm leading-snug break-words ${
               currentMission.validated ? "text-green-400" : "text-white"
-            }`}
+            } whitespace-pre-wrap font-mono`} // Ajout de whitespace-pre-wrap et font-mono
           >
             {currentMission.instruction}
           </p>

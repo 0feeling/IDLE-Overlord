@@ -13,7 +13,7 @@ generatorsData.forEach((gen) => {
   };
 });
 
-// Missions du tutoriel
+// Missions du tutoriel de CatGPT
 const tutorialMissions = [
   {
     instruction: "Êtes-vous prêt à commencer l'aventure ?",
@@ -59,102 +59,29 @@ const tutorialMissions = [
 // Instructions pour Missions de Cristal
 const cristalMissions = [
   {
-    instruction: `Une variable est comparable à une boîte numérique que l’on nomme à l’aide d’une ou plusieurs lettres.
-Elle permet de stocker une valeur afin de pouvoir la réutiliser ou la modifier plus tard :
-
-        1. Pour créer / déclarer une variable, on utilise le mot-clé let.
-
-        2. Ce mot-clé est suivi d’un nom : il doit commencer par une lettre, ne contenir aucun espace, et ne pas être un mot réservé.
-
-        3. Le symbole = permet d’assigner une valeur à cette variable.
-
-        4. Cette valeur peut être un texte (ex. "message"), un nombre (ex. 3.14), ou un booléen, c’est-à-dire une valeur logique comme true (vrai) ou false (faux).
-
-        5. L’instruction se termine par un point-virgule ;.
-
-Exemple :
-    let actif = true;
-Cela signifie que la variable nommée actif contient la valeur logique "vrai".`,
+    instruction:
+      'Une variable est comparable à une boîte numérique que l’on nomme à l’aide d’une ou plusieurs lettres.\nElle permet de stocker une valeur afin de pouvoir la réutiliser ou la modifier plus tard :\n\n\t    1. Pour créer / déclarer une variable, on utilise le mot-clé let.\n\n\t    2. Ce mot-clé est suivi d’un nom : il doit commencer par une lettre, ne contenir aucun espace, et ne pas être un mot réservé.\n\n\t    3. Le symbole = permet d’assigner une valeur à cette variable.\n\n\t    4. Cette valeur peut être un texte (ex. "message"), un nombre (ex. 3.14), ou un booléen, c’est-à-dire une valeur logique comme true (vrai) ou false (faux).\n\n\t    5. L’instruction se termine par un point-virgule ;.\n\nExemple :\n    let actif = true;\nCela signifie que la variable nommée actif contient la valeur logique "vrai".',
     validated: false
   },
   {
-    instruction: `Pour modifier la couleur de fond de l’éditeur :
-
-        1. Sélectionner l’élément de la page dont le nom est "editor" : 
-        ' document.querySelector('editor') '
-
-        2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à : 
-        ' .style.background = '
-
-        3. Appliquer un dégradé horizontal avec : 
-        ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) ' 
-        
-        Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal: 
-        ' #0055A4, #FFFFFF, #EF4135 '`,
+    instruction:
+      "Pour modifier la couleur de fond de l’éditeur :\n\n\t    1. Sélectionner l’élément de la page dont le nom est \"editor\" : \n\t    ' document.querySelector('editor') '\n\n\t    2. Modifier le style (CSS) de la page et cibler la couleur de fond grâce à : \n\t    ' .style.background = '\n\n\t    3. Appliquer un dégradé horizontal avec: \n\t    ' linear-gradient(to right, #0055A4, #FFFFFF, #EF4135) ' \n\t    \n\t    Les éléments avec un # et entre parenthèses correspondent à des couleurs différentes en format héxadecimal: \n\t    ' #0055A4, #FFFFFF, #EF4135 '",
     validated: false
   },
   {
-    instruction: `Créer une fonction ' purifierLaPage '.
-  Pour créer une fonction qui remplace certains mots en anglais dans la page par leurs équivalents français, voici la procédure à suivre :
-
-        1. Déclarer une fonction grâce au mot-clé :
-        ' function '
-
-        2. Donner un nom explicite à la fonction, ici :
-        'purifierLaPage '
-
-        3. Ajouter des parenthèses () à la suite du nom pour signaler qu’il s’agit d’une fonction.
-        Même si on ne passe pas d’information à la fonction ici, les parenthèses sont toujours nécessaires.
-
-        4. Ouvrir une paire d’accolades {} après les parenthèses.
-        Elles contiendront toutes les instructions que la fonction devra exécuter.
-
-        5. À l’intérieur, écrire une instruction qui permet de chercher et remplacer du texte dans la page :
-        document.body.innerHTML = document.body.innerHTML.replace('MotAremplacer, )
-
-        6. Ajouter plusieurs .replace(...) à la suite pour modifier plusieurs expressions en anglais.
-        Chaque appel remplace un mot par un autre.
-
-Exemple complet à recopier dans la console :
-
-function NameOfTheFunction() {
-document.body.innerHTML = document.body.innerHTML
-.replace("EnglishWord1", "MotFrançais1")
-.replace("EnglishWord2", "MotFrançais2")
-.replace("EnglishWord3", "MotFrançais3")
-.replace("EnglishWord4", "MotFrançais4")
-}`,
+    instruction:
+      'Créer une fonction \' purifierLaPage \'.\n  Pour créer une fonction qui remplace certains mots en anglais dans la page par leurs équivalents français, voici la procédure à suivre :\n\n\t    1. Déclarer une fonction grâce au mot-clé :\n\t    \' function \'\n\n\t    2. Donner un nom explicite à la fonction, ici :\n\t    \'purifierLaPage \'\n\n\t    3. Ajouter des parenthèses () à la suite du nom pour signaler qu’il s’agit d’une fonction.\n\t    Même si on ne passe pas d’information à la fonction ici, les parenthèses sont toujours nécessaires.\n\n\t    4. Ouvrir une paire d’accolades {} après les parenthèses.\n\t    Elles contiendront toutes les instructions que la fonction devra exécuter.\n\n\t    5. À l’intérieur, écrire une instruction qui permet de chercher et remplacer du texte dans la page :\n\t    document.body.innerHTML = document.body.innerHTML.replace(\'MotAremplacer, )\n\n\t    6. Ajouter plusieurs .replace(...) à la suite pour modifier plusieurs expressions en anglais.\n\t    Chaque appel remplace un mot par un autre.\n\nExemple complet à recopier dans la console :\n\nfunction NameOfTheFunction() {\ndocument.body.innerHTML = document.body.innerHTML\n.replace("EnglishWord1", "MotFrançais1")\n.replace("EnglishWord2", "MotFrançais2")\n.replace("EnglishWord3", "MotFrançais3")\n.replace("EnglishWord4", "MotFrançais4")\n}',
     validated: false
   },
   {
-    instruction: `Pour créer une boucle, il faut suivre une structure bien précise :
-
-        1. Commencer par le mot-clé qui permet de répéter une action :
-        while
-
-        2. Entre parenthèses, on indique une condition : tant que cette condition est vraie, la boucle continue.
-        Exemple : while (i < 5) répétera des instructions tant que i est inférieur à 5.
-
-        3. Ouvrir une accolade { pour écrire les instructions à répéter.
-
-        4. À l’intérieur, écrire ce que l'on veut répéter, par exemple une instruction qui affiche un message :
-        console.log("Bonjour");
-
-        5. Fermer l’accolade } pour terminer la boucle.
-
-        6. ⚠️ Attention : il faut toujours prévoir une condition qui permette d’arrêter la boucle.
-        Sinon, elle tourne sans fin cela peut bloquer complètement le programme, qui répète sans cesse la même instruction, ou bien même faire crasher l’ordinateur de l'utilisateur.
-
-        Exemple complet :
-
-        let i = 0;
-        while (i < 5) {
-          console.log("Tour " + i);
-          i++;
-        }`,
+    instruction:
+      'Pour créer une boucle, il faut suivre une structure bien précise :\n\n\t    1. Commencer par le mot-clé qui permet de répéter une action :\n\t    while\n\n\t    2. Entre parenthèses, on indique une condition : tant que cette condition est vraie, la boucle continue.\n\t    Exemple : while (i < 5) répétera des instructions tant que i est inférieur à 5.\n\n\t    3. Ouvrir une accolade { pour écrire les instructions à répéter.\n\n\t    4. À l’intérieur, écrire ce que l\'on veut répéter, par exemple une instruction qui affiche un message :\n\t    console.log("Bonjour");\n\n\t    5. Fermer l’accolade } pour terminer la boucle.\n\n\t    6. ⚠️ Attention : il faut toujours prévoir une condition qui permette d’arrêter la boucle.\n\t    Sinon, elle tourne sans fin cela peut bloquer complètement le programme, qui répète sans cesse la même instruction, ou bien même faire crasher l’ordinateur de l\'utilisateur.\n\n\t    Exemple complet :\n\n\t    let i = 0;\n\t    while (i < 5) {\n\t      console.log("Tour " + i);\n\t      i++;\n\t    }',
     validated: false
   },
-  { instruction: "Faire un Choix", validated: false }
+  {
+    instruction: "Faire un Choix",
+    validated: false
+  }
 ];
 
 const GPTOverlordContext = createContext();
