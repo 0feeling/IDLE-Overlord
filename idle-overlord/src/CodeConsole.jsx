@@ -1,5 +1,6 @@
 import React from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
+import { getStepMessages } from "./stepConsoleMessages";
 
 export default function CodeConsole() {
   const { gameState, terminalLogs } = useGPTOverlord();
@@ -28,13 +29,16 @@ export default function CodeConsole() {
         {/* Section des succès utilisateur */}
         <div>
           <div className="text-green-400 mb-2">// Progression :</div>
-          {terminalLogs
-            .filter((log) => log.source === "success")
-            .map((log, i) => (
-              <div key={`success-${i}`} className="text-gray-300 mb-1">
-                <span className="text-green-400">✔</span> {log.text}
-              </div>
-            ))}
+          {getStepMessages(
+            gameState.cristalMode
+              ? gameState.cristalStep
+              : gameState.tutorialStep,
+            gameState.cristalMode
+          ).map((line, index) => (
+            <div key={`success-${index}`} className="text-gray-300 mb-1">
+              <span className="text-green-400">✔</span> {line}
+            </div>
+          ))}
         </div>
 
         {/* Historique du code */}

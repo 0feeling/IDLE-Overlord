@@ -125,13 +125,18 @@ document.corps.interieurHTML = document.corps.interieurHTML
   4: [`N'hésitez pas ! Ecrivez donc: " delete CatGPT " dans votre éditeur`]
 };
 
-// Fonction de validation générique
-const validateCode = (step, code, patternSet) => {
+// Fonction de validation
+const isExactMatch = (step, code, patternSet) => {
   const cleanedCode = code.trim();
-  return patternSet?.[step]?.test(cleanedCode);
+  const regexString = patternSet[step]?.toString().replace(/^\/|\/$/g, "");
+  return new RegExp(`^${regexString}$`, "i").test(cleanedCode);
 };
 
-// Gestionnaire de succès générique
+const isApproximateMatch = (step, code, patternSet) => {
+  return patternSet?.[step]?.test(code.trim());
+};
+
+// Gestionnaire de succès
 const handleSuccess = (
   message,
   source,
@@ -139,6 +144,7 @@ const handleSuccess = (
   logToTerminal,
   clearEditor
 ) => {
+  // Logique existante
   logToTerminal({ text: message, source });
   advanceFn();
   clearEditor();
@@ -280,7 +286,8 @@ function Editor() {
       return;
     }
 
-    const isCatGPTValid = validateCode(currentStep, code, matchByStep);
+    const isExact = isExactMatch(currentStep, code, matchByStep);
+    const isCatGPTValid = isApproximateMatch(currentStep, code, matchByStep);
     if (isCatGPTValid) {
       setFeedbackType("success");
       handleSuccess(
@@ -290,6 +297,12 @@ function Editor() {
         logToTerminal,
         clearEditor
       );
+
+      if (isCatGPTValid && !isExact) {
+        const approxMessage =
+          "⏳ Tu y étais presque mais j'ai légèrement modifié ton code pour que tout fonctionne parfaitement !";
+        logToTerminal({ text: approxMessage, source: "gpt" });
+      }
     } else {
       setFeedbackType("error");
       handleError(

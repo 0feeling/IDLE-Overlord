@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import generatorsData from "./generatorsData"; // Import des données des générateurs
+import { ValidationService } from "./ValidationService";
 
 // Conversion des données du générateur au format attendu
 const formattedGenerators = {};
@@ -176,7 +177,7 @@ export const GPTOverlordContextProvider = ({ children }) => {
       };
     });
   };
-
+  const [approximationLogs, setApproximationLogs] = useState([]);
   // Fonction pour acheter un générateur
   const buyGenerator = (id) => {
     setGameState((prev) => {
@@ -356,7 +357,9 @@ export const GPTOverlordContextProvider = ({ children }) => {
         advanceCristalStep,
         hideOverlord,
         buyGenerator,
-        addDevLog
+        addDevLog,
+        approximationLogs,
+        setApproximationLogs
       }}
     >
       {children}
