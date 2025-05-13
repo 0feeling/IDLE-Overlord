@@ -3,7 +3,7 @@ import { useGPTOverlord } from "./GPTOverlordContext";
 import { getStepMessages } from "./stepConsoleMessages";
 
 export default function CodeConsole() {
-  const { gameState, terminalLogs } = useGPTOverlord();
+  const { gameState } = useGPTOverlord();
 
   return (
     <div className="bg-gray-800 border-t border-gray-700 h-96 flex flex-col">

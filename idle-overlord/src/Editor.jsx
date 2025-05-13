@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useGPTOverlord } from "./GPTOverlordContext";
 import MissionPanel from "./MissionPanel"; // Import du composant MissionPanel
+import { ValidationService } from "./ValidationService";
 
 const DEV_MODE = true;
 
@@ -264,7 +265,11 @@ function Editor() {
       gameState.cristalMode ||
       (gameState.tutorialStep >= 6 && cristalStep >= 0)
     ) {
-      const isCristalValid = validateCode(cristalStep, code, cristalMissions);
+      const isCristalValid = ValidationService.isApproximateMatch(
+        gameState.cristalStep,
+        code,
+        cristalMissions
+      );
       if (isCristalValid) {
         setFeedbackType("success");
         handleSuccess(
